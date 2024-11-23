@@ -20,15 +20,33 @@
             background-size: cover;
         }
 
-        /* Фоновое видео */
-        #background-video {
+        /* Контейнер для видео */
+        #video-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            z-index: -1; /* Отправляем на задний план */
+            overflow: hidden;
+        }
+
+        /* Фоновое видео */
+        #background-video {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            z-index: -1; /* Отправляем видео на задний план */
+            display: none; /* Скрыто по умолчанию, для fallback */
+        }
+
+        /* Включаем видео только если оно поддерживается */
+        @supports (object-fit: cover) {
+            #background-video {
+                display: block;
+            }
+            body {
+                background: none; /* Убираем резервный фон */
+            }
         }
 
         .wrapper {
@@ -117,62 +135,25 @@
             font-size: 0.9rem;
         }
 
-        .highlight {
-            display: inline-flex;
-            align-items: center; /* Выравнивание по центру */
-            gap: 2px;
-        }
-
-        .highlight span {
-            display: inline-block;
-            font-weight: bold;
-            animation: fadeInOut 2s infinite;
-        }
-
-        .highlight span.emoji {
-            font-size: 1.2em; /* Размер эмодзи немного больше */
-            vertical-align: middle; /* Выравнивание по центру с текстом */
-        }
-
-        .highlight.negative span {
-            color: #FF4500;
-            text-shadow: 0 0 10px #FF4500, 0 0 20px #FF6347;
-        }
-
-        .highlight.low span {
-            color: #FFD700;
-            text-shadow: 0 0 10px #FFD700, 0 0 20px #FFA500;
-        }
-
-        .highlight.positive span {
-            color: #32CD32;
-            text-shadow: 0 0 10px #32CD32, 0 0 20px #228B22;
-        }
-
-        @keyframes fadeInOut {
-            0%, 100% {
-                opacity: 0.2;
-                text-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
-            }
-            50% {
-                opacity: 1;
-                text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
-            }
-        }
-
         @media (max-width: 768px) {
             #background-video {
-                display: none;
+                display: none !important; /* На мобильных устройствах скрываем видео */
+            }
+            body {
+                background: url('resources/background.jpg') no-repeat center center fixed; /* Устанавливаем резервный фон */
+                background-size: cover;
             }
         }
     </style>
 </head>
 <body>
     <!-- Видео фон -->
-    <video id="background-video" autoplay loop muted playsinline>
-        <source src="resources/background.mp4" type="video/mp4">
-        Ваш браузер не поддерживает видео.
-    </video>
+    <div id="video-container">
+        <video id="background-video" autoplay loop muted playsinline>
+            <source src="resources/background.mp4" type="video/mp4">
+            Ваш браузер не поддерживает видео.
+        </video>
+    </div>
 
     <div class="wrapper">
         <div class="container">
@@ -222,39 +203,13 @@
                 highlightClass = 'low';
             }
 
-            const profitText = `Чистая прибыль: ${L.toFixed(2)}`;
-            const highlightHTML = profitText
-                .split('')
-                .map(char => `<span>${char}</span>`)
-                .join('');
-
             document.getElementById('result').innerHTML = `
                 <p>Курс USDT: ${K.toFixed(2)}</p>
                 <p>Рубли: ${S.toFixed(2)}</p>
                 <p>Прибыль с сайта: ${B.toFixed(2)}</p>
-                <p class="highlight ${highlightClass}"><span class="emoji">💰</span>${highlightHTML}</p>
+                <p class="highlight ${highlightClass}">Чистая прибыль: ${L.toFixed(2)}</p>
             `;
         }
-
-        const wrapper = document.querySelector('.wrapper');
-        const container = document.querySelector('.container');
-        let mouseX = 0, mouseY = 0;
-        let rotateX = 0, rotateY = 0;
-
-        wrapper.addEventListener('mousemove', (e) => {
-            const rect = wrapper.getBoundingClientRect();
-            mouseX = e.clientX - rect.left - rect.width / 2;
-            mouseY = e.clientY - rect.top - rect.height / 2;
-
-            rotateX = mouseY / 20;
-            rotateY = mouseX / 20;
-
-            container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-        });
-
-        wrapper.addEventListener('mouseleave', () => {
-            container.style.transform = 'rotateX(0) rotateY(0)';
-        });
     </script>
 </body>
 </html>
