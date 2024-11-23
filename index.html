@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор прибыли</title>
+    <!-- Добавление favicon -->
+    <link rel="icon" href="resources/favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            background: url('resources/background.jpg') no-repeat center center fixed; /* Резервный фон */
+            background-size: cover;
+        }
+
+        /* Фоновое видео */
+        #background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1; /* Отправляем видео на задний план */
+        }
+
+        .wrapper {
+            perspective: 1000px; /* Создаем перспективу для 3D */
+        }
+
+        .container {
+            width: 360px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37),
+                        0 0 15px rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out, box-shadow 0.3s ease, border 0.3s ease;
+        }
+
+        /* Свечение окна при наведении */
+        .container:hover {
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5),
+                        0 0 25px rgba(255, 255, 255, 0.6),
+                        0 0 40px rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        h1 {
+            color: #FFFFFF;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            color: #ddd;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .form-group input {
+            width: calc(100% - 20px);
+            margin: 0 auto;
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            box-shadow: inset 0 4px 4px rgba(0, 0, 0, 0.2);
+            display: block;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 20px;
+            border: none;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #feb47b, #ff7e5f);
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            color: #FFFFFF;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .highlight {
+            display: inline-flex;
+            align-items: center; /* Выравнивание по центру */
+            gap: 2px;
+        }
+
+        .highlight span {
+            display: inline-block;
+            font-weight: bold;
+            animation: fadeInOut 2s infinite;
+        }
+
+        .highlight span.emoji {
+            font-size: 1.2em; /* Размер эмодзи немного больше */
+            vertical-align: middle; /* Выравнивание по центру с текстом */
+        }
+
+        .highlight.negative span {
+            color: #FF4500;
+            text-shadow: 0 0 10px #FF4500, 0 0 20px #FF6347;
+        }
+
+        .highlight.low span {
+            color: #FFD700;
+            text-shadow: 0 0 10px #FFD700, 0 0 20px #FFA500;
+        }
+
+        .highlight.positive span {
+            color: #32CD32;
+            text-shadow: 0 0 10px #32CD32, 0 0 20px #228B22;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% {
+                opacity: 0.2;
+                text-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
+            }
+            50% {
+                opacity: 1;
+                text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #background-video {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Видео фон -->
+    <video id="background-video" autoplay loop muted playsinline>
+        <source src="resources/background.mp4" type="video/mp4">
+        Ваш браузер не поддерживает видео.
+    </video>
+
+    <div class="wrapper">
+        <div class="container">
+            <h1>Калькулятор прибыли</h1>
+            <div class="form-group">
+                <label for="N">Цена товара в Google Payments:</label>
+                <input type="number" id="N" step="0.01">
+            </div>
+            <div class="form-group">
+                <label for="n">Курс обмена USDT у продавца:</label>
+                <input type="number" id="n" step="0.01">
+            </div>
+            <div class="form-group">
+                <label for="p">Актуальный курс обмена:</label>
+                <input type="number" id="p" step="0.01">
+            </div>
+            <div class="form-group">
+                <label for="M">Цена на Playerok:</label>
+                <input type="number" id="M" step="0.01">
+            </div>
+            <button onclick="calculate()">Рассчитать</button>
+            <div id="result" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const N = parseFloat(document.getElementById('N').value);
+            const n = parseFloat(document.getElementById('n').value);
+            const p = parseFloat(document.getElementById('p').value);
+            const M = parseFloat(document.getElementById('M').value);
+
+            if (isNaN(N) || isNaN(n) || isNaN(p) || isNaN(M)) {
+                document.getElementById('result').innerText = 'Пожалуйста, заполните все поля корректно.';
+                return;
+            }
+
+            const K = N / n;
+            const S = K * p;
+            const B = M * 0.72;
+            const L = B - S;
+
+            let highlightClass = 'positive';
+            if (L < 0) {
+                highlightClass = 'negative';
+            } else if (L < 250) {
+                highlightClass = 'low';
+            }
+
+            const profitText = `Чистая прибыль: ${L.toFixed(2)} ₽`;
+            const highlightHTML = profitText
+                .split('')
+                .map(char => `<span>${char}</span>`)
+                .join('');
+
+            document.getElementById('result').innerHTML = `
+                <p>Курс USDT: ${K.toFixed(2)}</p>
+                <p>Рубли: ${S.toFixed(2)}</p>
+                <p>Прибыль с сайта: ${B.toFixed(2)}</p>
+                <p class="highlight ${highlightClass}"><span class="emoji">💰</span>${highlightHTML}</p>
+            `;
+        }
+
+        const wrapper = document.querySelector('.wrapper');
+        const container = document.querySelector('.container');
+        let mouseX = 0, mouseY = 0;
+        let rotateX = 0, rotateY = 0;
+
+        wrapper.addEventListener('mousemove', (e) => {
+            const rect = wrapper.getBoundingClientRect();
+            mouseX = e.clientX - rect.left - rect.width / 2;
+            mouseY = e.clientY - rect.top - rect.height / 2;
+
+            rotateX = mouseY / 20;
+            rotateY = mouseX / 20;
+
+            container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+
+        wrapper.addEventListener('mouseleave', () => {
+            container.style.transform = 'rotateX(0) rotateY(0)';
+        });
+    </script>
+
+<!-- Иконка для вызова окна -->
+<div class="usdt-icon" onclick="toggleModal()">
+    <span>$</span>
+</div>
+
+<!-- Окно с графиком -->
+<div class="usdt-modal" id="usdt-modal">
+    <div class="modal-header">
+        <div class="close-button" onclick="closeModal()"></div>
+        <div>
+            <label for="usdt-amount">Введите количество USDT:</label>
+            <input type="number" id="usdt-amount" placeholder="Количество USDT" value="1" oninput="updateChartValues()" />
+        </div>
+        <div>
+            <label for="manual-date">Введите дату (ДД.ММ.ГГГГ):</label>
+            <input type="text" id="manual-date" placeholder="ДД.ММ.ГГГГ" oninput="validateAndUpdateDate()" />
+        </div>
+        <span id="current-rate" class="rate-display">Загрузка...</span>
+    </div>
+    <div class="period-buttons">
+        <button onclick="updatePeriod('1')" id="btn-day">День</button>
+        <button onclick="updatePeriod('7')" id="btn-week">Неделя</button>
+        <button onclick="updatePeriod('30')" id="btn-month" class="active">Месяц</button>
+        <button onclick="updatePeriod('365')" id="btn-year">Год</button>
+        <button onclick="updatePeriod('max')" id="btn-all">Всё время</button>
+    </div>
+    <canvas id="usdt-chart"></canvas>
+</div>
+
+<!-- Стили -->
+<style>
+    body {
+        background-color: #1e1e2f;
+        color: #ccc;
+        font-family: Arial, sans-serif;
+    }
+
+    .usdt-icon {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        background-color: #3a3a3a;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        cursor: pointer;
+        transition: transform 0.3s, background-color 0.3s;
+    }
+
+    .usdt-icon:hover {
+        transform: scale(1.1);
+        background-color: #4a4a4a;
+    }
+
+    .usdt-modal {
+        position: fixed;
+        bottom: -100%;
+        right: 50px;
+        width: 600px;
+        background: #2a2a3d;
+        border-radius: 10px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        opacity: 0;
+        transform: translateY(100%);
+        transition: all 0.5s ease-in-out;
+    }
+
+    .usdt-modal.active {
+        opacity: 1;
+        transform: translateY(0);
+        bottom: 50px;
+    }
+
+    .modal-header {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .modal-header label {
+        font-size: 14px;
+        color: #ccc;
+    }
+
+    .modal-header input {
+        padding: 8px;
+        border: 1px solid #555;
+        border-radius: 5px;
+        background: #1e1e2f;
+        color: #ccc;
+    }
+
+    .close-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 15px;
+        height: 15px;
+        background-color: #ff5f56;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .close-button:hover {
+        background-color: #ff3b30;
+    }
+
+    .period-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+    }
+
+    .period-buttons button {
+        background-color: #3a3a3a;
+        color: #ccc;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.2s ease, color 0.2s ease;
+        flex: 1;
+        margin: 5px;
+    }
+
+    .period-buttons button.active {
+        background-color: #555;
+        color: #fff;
+    }
+
+    .period-buttons button:hover {
+        background-color: #444;
+    }
+
+    .rate-display {
+        font-size: 16px;
+        font-weight: bold;
+        color: #4caf50;
+        text-shadow: 0 0 10px rgba(76, 175, 80, 0.7);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Пульсация */
+    @keyframes pulse {
+        0% {
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.7);
+        }
+        50% {
+            text-shadow: 0 0 20px rgba(76, 175, 80, 1);
+        }
+        100% {
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.7);
+        }
+    }
+
+    .rate-display.pulse {
+        animation: pulse 10s infinite;
+    }
+</style>
+
+<!-- Скрипт -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const modal = document.getElementById('usdt-modal');
+    const currentRate = document.getElementById('current-rate');
+    const usdtAmountInput = document.getElementById('usdt-amount');
+    const dateInput = document.getElementById('manual-date');
+    let chart;
+    let prices = [];
+    let labels = [];
+    let activePeriodButton = document.getElementById('btn-month');
+
+    function toggleModal() {
+        modal.classList.toggle('active');
+        if (modal.classList.contains('active')) {
+            loadUsdtData(30);
+        }
+    }
+
+    function closeModal() {
+        modal.classList.remove('active');
+    }
+
+    async function loadUsdtData(days) {
+        const rubApiUrl = days === 'max'
+            ? `https://api.coingecko.com/api/v3/coins/tether/market_chart?vs_currency=rub&days=max`
+            : `https://api.coingecko.com/api/v3/coins/tether/market_chart?vs_currency=rub&days=${days}`;
+
+        try {
+            const response = await fetch(rubApiUrl);
+            const data = await response.json();
+
+            labels = data.prices.map(price => {
+                const date = new Date(price[0]);
+                return `${date.getDate()}.${date.getMonth() + 1}`;
+            });
+
+            prices = data.prices.map(price => price[1]);
+
+            updateCurrentRate();
+            renderChart();
+        } catch (error) {
+            currentRate.innerHTML = '<span style="color: red;">Ошибка загрузки данных.</span>';
+        }
+    }
+
+    function renderChart() {
+        const ctx = document.getElementById('usdt-chart').getContext('2d');
+        if (chart) {
+            chart.destroy();
+        }
+
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '',
+                    data: prices.map(price => price * usdtAmountInput.value),
+                    borderColor: '#4caf50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                    fill: true,
+                    tension: 0.1,
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: '#4caf50',
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: (tooltipItems) => labels[tooltipItems[0].dataIndex],
+                            label: (tooltipItem) => `${usdtAmountInput.value} USDT = ${(tooltipItem.raw).toFixed(2)} ₽`
+                        },
+                        displayColors: false,
+                        backgroundColor: '#333',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        borderColor: '#4caf50',
+                        borderWidth: 1,
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#ccc' }
+                    },
+                    y: {
+                        grid: { color: '#555' },
+                        ticks: { color: '#ccc' }
+                    }
+                }
+            }
+        });
+    }
+
+    function updateCurrentRate() {
+        if (prices.length > 0) {
+            const lastPrice = prices[prices.length - 1];
+            const calculatedRate = (lastPrice * usdtAmountInput.value).toFixed(2);
+
+            currentRate.innerHTML = `
+                <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="Tether" style="width: 20px; vertical-align: middle; margin-right: 5px;" />
+                ${usdtAmountInput.value} USDT = ${calculatedRate} ₽
+            `;
+            currentRate.classList.add('pulse');
+        } else {
+            currentRate.innerHTML = '<span style="color: red;">Нет доступных данных.</span>';
+            currentRate.classList.remove('pulse');
+        }
+    }
+
+    usdtAmountInput.addEventListener('input', () => {
+        updateCurrentRate();
+        if (chart) {
+            chart.data.datasets[0].data = prices.map(price => price * usdtAmountInput.value);
+            chart.update();
+        }
+    });
+
+    async function validateAndUpdateDate() {
+        const date = dateInput.value;
+        const regex = /^\d{2}\.\d{2}\.\d{4}$/;
+
+        if (!regex.test(date)) {
+            currentRate.innerHTML = '<span style="color: red;">Введите дату в формате ДД.ММ.ГГГГ</span>';
+            return;
+        }
+
+        const [day, month, year] = date.split('.');
+        const formattedDate = `${day}-${month}-${year}`;
+        const rubApiUrl = `https://api.coingecko.com/api/v3/coins/tether/history?date=${formattedDate}`;
+
+        try {
+            const response = await fetch(rubApiUrl);
+            const data = await response.json();
+            const rate = data.market_data?.current_price?.rub;
+
+            if (rate) {
+                prices = [rate];
+                updateCurrentRate();
+            } else {
+                currentRate.innerHTML = '<span style="color: red;">Нет данных для выбранной даты.</span>';
+            }
+        } catch (error) {
+            currentRate.innerHTML = '<span style="color: red;">Ошибка загрузки данных.</span>';
+        }
+    }
+
+    function updatePeriod(period) {
+        loadUsdtData(period);
+
+        if (activePeriodButton) {
+            activePeriodButton.classList.remove('active');
+        }
+        activePeriodButton = document.querySelector(`#btn-${period === 'max' ? 'all' : period}`);
+        if (activePeriodButton) {
+            activePeriodButton.classList.add('active');
+        }
+    }
+</script>
+
+</body>
+</html>
