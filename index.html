@@ -597,5 +597,130 @@
     }
 </script>
 
+<script>
+    // Дождаться загрузки страницы
+    document.addEventListener('DOMContentLoaded', function () {
+        // Создать контейнер для иконок в нижнем правом углу, если он ещё не существует
+        let iconContainer = document.querySelector('.bottom-right-icon-container');
+        if (!iconContainer) {
+            iconContainer = document.createElement('div');
+            iconContainer.className = 'bottom-right-icon-container';
+            iconContainer.style.position = 'fixed';
+            iconContainer.style.bottom = '19px';  // Позиция контейнера
+            iconContainer.style.right = '80px';   // Позиция контейнера
+            iconContainer.style.display = 'flex';
+            iconContainer.style.flexDirection = 'row-reverse'; // Расположить иконки справа налево
+            iconContainer.style.gap = '10px'; // Расстояние между иконками
+            iconContainer.style.zIndex = '1000';
+            document.body.appendChild(iconContainer);
+        }
+
+        // Переменная для размера иконки (можно изменить размер здесь)
+        const iconSize = 47;  // Задайте размер иконки, например, 50px
+
+        // Создать новую круглую иконку
+        const newIcon = document.createElement('img');
+        newIcon.src = 'https://s3.leans.fun/avatars/7fa0a365-e3f9-4926-bd05-fbb352a5fe65.gif?w=128'; // Новый источник для иконки
+        newIcon.alt = 'New Icon';
+        newIcon.style.width = `${iconSize}px`;  // Используем заданный размер
+        newIcon.style.height = `${iconSize}px`; // Используем заданный размер
+        newIcon.style.cursor = 'pointer';
+        newIcon.style.borderRadius = '50%'; // Делает иконку круглой
+        newIcon.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)'; // Лёгкая тень для красоты
+        newIcon.style.border = '2px solid #d3d3d3'; // Серая обводка вокруг иконки
+
+     // Добавить плавную анимацию изменения размера
+     newIcon.style.transition = 'transform 0.3s ease'; // Плавное изменение размера
+
+     // Добавить эффекты наведения
+    newIcon.addEventListener('mouseenter', () => {
+    newIcon.style.transform = 'scale(1.1)'; // Увеличить иконку
+    });
+
+    newIcon.addEventListener('mouseleave', () => {
+    newIcon.style.transform = 'scale(1)'; // Вернуть размер назад
+    });
+
+        // Создать размытие для заднего плана
+        const backdrop = document.createElement('div');
+        backdrop.style.position = 'fixed';
+        backdrop.style.top = '0';
+        backdrop.style.left = '0';
+        backdrop.style.width = '100%';
+        backdrop.style.height = '100%';
+        backdrop.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        backdrop.style.backdropFilter = 'blur(10px)';
+        backdrop.style.zIndex = '1000';
+        backdrop.style.display = 'none';
+
+        // Создать модальное окно
+        const modal = document.createElement('div');
+        modal.style.position = 'fixed';
+        modal.style.top = '50%';
+        modal.style.left = '50%';
+        modal.style.transform = 'translate(-50%, -50%)';
+        modal.style.width = '80%';
+        modal.style.height = '80%';
+        modal.style.backgroundColor = '#f8f8f8';
+        modal.style.borderRadius = '12px';
+        modal.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
+        modal.style.overflow = 'hidden';
+        modal.style.zIndex = '1001';
+        modal.style.display = 'none';
+        modal.style.border = '1px solid #ccc';
+
+        // Создать заголовок модального окна, имитирующий интерфейс MacOS
+        const modalHeader = document.createElement('div');
+        modalHeader.style.height = '30px';
+        modalHeader.style.backgroundColor = '#ebebeb';
+        modalHeader.style.borderBottom = '1px solid #dcdcdc';
+        modalHeader.style.display = 'flex';
+        modalHeader.style.alignItems = 'center';
+        modalHeader.style.padding = '0 10px';
+
+        // Кнопка закрытия в стиле MacOS (перемещаем её в правую сторону)
+        const closeButton = document.createElement('div');
+        closeButton.style.width = '12px';
+        closeButton.style.height = '12px';
+        closeButton.style.borderRadius = '50%';
+        closeButton.style.backgroundColor = '#ff5f57';
+        closeButton.style.marginLeft = 'auto'; // Сдвиг в правую часть контейнера
+        closeButton.style.cursor = 'pointer';
+
+        // Закрытие модального окна
+        closeButton.addEventListener('click', function () {
+            modal.style.display = 'none';
+            backdrop.style.display = 'none';
+        });
+
+        // Добавить кнопку в заголовок
+        modalHeader.appendChild(closeButton);
+
+        // Добавить iframe для отображения страницы
+        const iframe = document.createElement('iframe');
+        iframe.src = 'https://leans.fun/westyasha'; // Замените на URL вашей страницы
+        iframe.style.width = '100%';
+        iframe.style.height = 'calc(100% - 30px)'; // Учесть высоту заголовка
+        iframe.style.border = 'none';
+
+        // Сборка модального окна
+        modal.appendChild(modalHeader);
+        modal.appendChild(iframe);
+
+        // Добавить элементы на страницу
+        document.body.appendChild(backdrop);
+        document.body.appendChild(modal);
+
+        // Открытие модального окна
+        newIcon.addEventListener('click', function () {
+            modal.style.display = 'block';
+            backdrop.style.display = 'block';
+        });
+
+        // Добавить новую иконку в контейнер
+        iconContainer.appendChild(newIcon);
+    });
+</script>
+
 </body>
 </html>
