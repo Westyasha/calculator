@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Калькулятор прибыли</title>
-    <!-- Добавление favicon -->
     <link rel="icon" href="resources/favicon.ico" type="image/x-icon">
     <style>
         body {
@@ -16,11 +15,10 @@
             align-items: center;
             font-family: 'Arial', sans-serif;
             overflow: hidden;
-            background: url('resources/background.jpg') no-repeat center center fixed; /* Резервный фон */
+            background: url('resources/background.jpg') no-repeat center center fixed;
             background-size: cover;
         }
 
-        /* Фоновое видео */
         #background-video {
             position: fixed;
             top: 0;
@@ -28,11 +26,11 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: -1; /* Отправляем видео на задний план */
+            z-index: -1;
         }
 
         .wrapper {
-            perspective: 1000px; /* Создаем перспективу для 3D */
+            perspective: 1000px;
         }
 
         .container {
@@ -49,7 +47,6 @@
             transition: transform 0.1s ease-out, box-shadow 0.3s ease, border 0.3s ease;
         }
 
-        /* Свечение окна при наведении */
         .container:hover {
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5),
                         0 0 25px rgba(255, 255, 255, 0.6),
@@ -119,7 +116,7 @@
 
         .highlight {
             display: inline-flex;
-            align-items: center; /* Выравнивание по центру */
+            align-items: center;
             gap: 2px;
         }
 
@@ -130,8 +127,8 @@
         }
 
         .highlight span.emoji {
-            font-size: 1.2em; /* Размер эмодзи немного больше */
-            vertical-align: middle; /* Выравнивание по центру с текстом */
+            font-size: 1.2em;
+            vertical-align: middle;
         }
 
         .highlight.negative span {
@@ -165,10 +162,96 @@
                 display: none;
             }
         }
+
+        .mui-style-5bd972 {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            justify-content: flex-start;
+        }
+
+        .mui-style-1qez00d {
+            display: flex;
+            align-items: center;
+        }
+
+        .mui-style-n8n07 {
+            position: relative;
+            width: 30px;
+            height: 30px;
+            margin-right: 5px;
+        }
+
+        .mui-style-hegfm2 {
+            color: #ddd;
+            font-size: 0.9rem;
+            margin-right: 10px;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+        .mui-style-hegfm2.low {
+            color: #FFD700;
+             text-shadow: 0 0 10px #FFD700, 0 0 20px #FFA500;
+        }
+
+        .mui-style-hegfm2.positive {
+            color: #32CD32;
+            text-shadow: 0 0 10px #32CD32, 0 0 20px #228B22;
+        }
+
+        .mui-style-yujfsp {
+            display: inline-flex;
+            align-items: center;
+            margin-left: auto;
+        }
+
+          .switch {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+             -webkit-tap-highlight-color: transparent; /* Remove highlight on tap */
+        }
+        .switch input {
+            cursor: inherit;
+            position: absolute;
+            opacity: 0;
+            z-index: -1;
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+            top: 0px;
+            left: 0px;
+        }
+
+         .switch .slider {
+            background-color: #c2c2c2;
+            border-radius: 20px;
+            width: 50px;
+            height: 28px;
+            position: relative;
+            transition: background-color 0.3s ease;
+        }
+
+        .switch .slider .thumb {
+            width: 20px;
+            height: 20px;
+            background-color: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 4px;
+             left: 4px;
+            transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1);
+        }
+
+        .switch input:checked + .slider {
+            background-color: #68C2DE;
+        }
+        .switch input:checked + .slider .thumb {
+             transform: translateX(22px);
+        }
     </style>
 </head>
 <body>
-    <!-- Видео фон -->
     <video id="background-video" autoplay loop muted playsinline>
         <source src="resources/background.mp4" type="video/mp4">
         Ваш браузер не поддерживает видео.
@@ -177,6 +260,22 @@
     <div class="wrapper">
         <div class="container">
             <h1>Калькулятор прибыли</h1>
+           <label class="MuiBox-root mui-style-5bd972">
+                <span class="MuiBox-root mui-style-1qez00d">
+                    <div class="MuiBox-root mui-style-n8n07">
+                        <img alt="fee-discount-badge" src="https://assets.playerok.com/web-app/images/Icons/fee-discount-compact-badge.png" decoding="async" data-nimg="fill" loading="lazy" style="position: absolute; height: 100%; width: 100%; inset: 0px; object-fit: cover; object-position: center center; color: transparent; user-select: none;">
+                    </div>
+                    <span class="MuiTypography-root MuiTypography-14 mui-style-hegfm2 low">Комиссия 28%</span>
+                </span>
+                 <span class="MuiSwitch-root MuiSwitch-sizeMedium mui-style-yujfsp">
+                   <label class="switch">
+                      <input type="checkbox" id="fee-toggle">
+                      <span class="slider">
+                         <span class="thumb"></span>
+                      </span>
+                    </label>
+                </span>
+            </label>
             <div class="form-group">
                 <label for="N">Цена товара в оплаченной валюте:</label>
                 <input type="number" id="N" step="0.01">
@@ -204,6 +303,8 @@
             const n = parseFloat(document.getElementById('n').value);
             const p = parseFloat(document.getElementById('p').value);
             const M = parseFloat(document.getElementById('M').value);
+            const feeToggle = document.getElementById('fee-toggle');
+            const isDiscountedFee = feeToggle.checked;
 
             if (isNaN(N) || isNaN(n) || isNaN(p) || isNaN(M)) {
                 document.getElementById('result').innerText = 'Пожалуйста, заполните все поля корректно.';
@@ -212,9 +313,8 @@
 
             const K = N / n;
             const S = K * p;
-            const B = M * 0.72;
+            const B = isDiscountedFee ? M * 0.82 : M * 0.72;
             const L = B - S;
-
             let highlightClass = 'positive';
             if (L < 0) {
                 highlightClass = 'negative';
@@ -234,28 +334,46 @@
                 <p>Прибыль с сайта: ${B.toFixed(2)}</p>
                 <p class="highlight ${highlightClass}"><span class="emoji">💰</span>${highlightHTML}</p>
             `;
+            updateFeeLabel(isDiscountedFee);
         }
 
+         function updateFeeLabel(isDiscounted) {
+            const feeLabel = document.querySelector('.mui-style-hegfm2');
+            feeLabel.textContent = isDiscounted ? 'Комиссия 18%' : 'Комиссия 28%';
+            feeLabel.classList.toggle('low', !isDiscounted);
+            feeLabel.classList.toggle('positive', isDiscounted);
+        }
+          const feeToggle = document.getElementById('fee-toggle');
+          feeToggle.addEventListener('change', () => {
+            const isDiscounted = feeToggle.checked;
+             updateFeeLabel(isDiscounted);
+        });
+          window.onload = () => {
+            updateFeeLabel(false);
+        };
         const wrapper = document.querySelector('.wrapper');
         const container = document.querySelector('.container');
-        let mouseX = 0, mouseY = 0;
-        let rotateX = 0, rotateY = 0;
+
 
         wrapper.addEventListener('mousemove', (e) => {
-            const rect = wrapper.getBoundingClientRect();
-            mouseX = e.clientX - rect.left - rect.width / 2;
-            mouseY = e.clientY - rect.top - rect.height / 2;
+           const rect = container.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const mouseX = e.clientX - centerX;
+            const mouseY = e.clientY - centerY;
+            
+            const rotateX = mouseY / 20;
+            const rotateY = mouseX / 20;
 
-            rotateX = mouseY / 20;
-            rotateY = mouseX / 20;
-
-            container.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            container.style.transform = `rotateX(${-rotateX}deg) rotateY(${rotateY}deg) `;
         });
 
         wrapper.addEventListener('mouseleave', () => {
-            container.style.transform = 'rotateX(0) rotateY(0)';
+          container.style.transform = 'rotateX(0) rotateY(0)';
         });
     </script>
+</body>
+</html>
 
 <!-- Иконка для вызова окна -->
 <div class="usdt-icon" onclick="toggleModal()">
