@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Original Meta Tags -->
     <meta property="og:title" content="Калькулятор прибыли">
     <meta property="og:site_name" content="Калькулятор прибыли" />
     <meta property="og:description" content="Это калькулятор прибыли." />
@@ -14,839 +15,251 @@
     <meta property="og:image:alt" content="Avatar Image" />
     <title>Калькулятор прибыли</title>
     <link rel="icon" href="resources/favicon.ico" type="image/x-icon">
+    <!-- Original Calculator CSS + Tab/Settings CSS -->
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
+        /* --- Original Base Styles --- */
+        body { margin: 0; padding: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; font-family: 'Arial', sans-serif; overflow-x: hidden; background: url('resources/background.jpg') no-repeat center center fixed; background-size: cover; color: #ddd; }
+        #background-video { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
+        .wrapper { perspective: 1000px; margin-top: 20px; margin-bottom: 20px; }
+        .container { width: 380px; padding: 20px; background: rgba(255, 255, 255, 0.1); border-radius: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37), 0 0 15px rgba(255, 255, 255, 0.3); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.18); transform-style: preserve-3d; transition: transform 0.1s ease-out, box-shadow 0.3s ease, border 0.3s ease; }
+        .container:hover { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.8); border: 1px solid rgba(255, 255, 255, 0.4); }
+        h1 { color: #FFFFFF; font-size: 1.5rem; margin-bottom: 15px; /* Подняты кнопки */ text-align: center; }
+        /* Original Form Styles */
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { color: #ddd; font-size: 0.9rem; margin-bottom: 5px; display: block; }
+        .form-group input { width: calc(100% - 20px); margin: 0 auto; padding: 10px; border-radius: 10px; border: none; outline: none; font-size: 1rem; background: rgba(255, 255, 255, 0.15); color: #fff; box-shadow: inset 0 4px 4px rgba(0, 0, 0, 0.2); display: block; }
+        /* Original Button */
+        button { width: 100%; padding: 10px; margin-top: 20px; border-radius: 20px; border: none; font-size: 1rem; background: linear-gradient(135deg, #ff7e5f, #feb47b); color: #fff; cursor: pointer; transition: all 0.3s ease-in-out; }
+        button:hover { background: linear-gradient(135deg, #feb47b, #ff7e5f); }
+        /* Original Result (Height auto) */
+        .result { margin-top: 20px; padding: 15px; background: rgba(0, 0, 0, 0.5); border-radius: 10px; color: #FFFFFF; text-align: left; font-size: 0.9rem; /* min-height убрана */ }
+        /* Original Highlight styles */
+        .highlight { display: inline-flex; align-items: center; gap: 2px; } .highlight span { display: inline-block; font-weight: bold; animation: fadeInOut 2s infinite; } .highlight span.emoji { font-size: 1.2em; vertical-align: middle; } .highlight.negative span { color: #FF4500; text-shadow: 0 0 10px #FF4500, 0 0 20px #FF6347; } .highlight.low span { color: #FFD700; text-shadow: 0 0 10px #FFD700, 0 0 20px #FFA500; } .highlight.positive span { color: #32CD32; text-shadow: 0 0 10px #32CD32, 0 0 20px #228B22; } @keyframes fadeInOut { 0%, 100% { opacity: 0.2; text-shadow: 0 0 5px currentColor, 0 0 10px currentColor; } 50% { opacity: 1; text-shadow: 0 0 20px currentColor, 0 0 40px currentColor; } }
+        /* Original Media Query */
+         @media (max-width: 768px) { #background-video { display: none; } body { background: linear-gradient(135deg, #6e8efb, #a777e3); } .container { width: 90%; } }
+        /* Original Base Fee Toggle styles (MUI-like) */
+        .mui-style-5bd972 { display: flex; align-items: center; margin-bottom: 10px; justify-content: flex-start; } .mui-style-1qez00d { display: flex; align-items: center; } .mui-style-n8n07 { position: relative; width: 30px; height: 30px; margin-right: 5px; } .mui-style-n8n07 img { position: absolute; height: 120%; width: 120%; inset: -2px; object-fit: cover; object-position: center center; color: transparent; user-select: none; } .mui-style-hegfm2 { color: #ddd; font-size: 0.9rem; margin-right: 10px; transition: color 0.3s ease, text-shadow 0.3s ease; } .mui-style-hegfm2.low { color: #FFD700; text-shadow: 0 0 10px #FFD700, 0 0 20px #FFA500; } .mui-style-hegfm2.positive { color: #32CD32; text-shadow: 0 0 10px #32CD32, 0 0 20px #228B22; } .mui-style-yujfsp { display: inline-flex; align-items: center; margin-left: auto; }
+        /* Original Switch Styles */
+         .switch { display: inline-flex; align-items: center; cursor: pointer; -webkit-tap-highlight-color: transparent; position: relative; vertical-align: middle; } .switch input { cursor: inherit; position: absolute; opacity: 0; z-index: 1; margin: 0px; padding: 0px; width: 100%; height: 100%; top: 0px; left: 0px; } .switch .slider { background-color: #c2c2c2; border-radius: 20px; width: 50px; height: 28px; position: relative; transition: background-color 0.3s ease; } .switch .slider .thumb { width: 20px; height: 20px; background-color: #fff; border-radius: 50%; position: absolute; top: 4px; left: 4px; transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1); } .switch input:checked + .slider { background-color: #68C2DE; } .switch input:checked + .slider .thumb { transform: translateX(22px); } #base-fee-toggle:checked + .slider { background-color: #68C2DE; }
+
+        /* --- Styles for Tabs --- */
+         .button-group {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Arial', sans-serif;
-            overflow: hidden;
-            background: url('resources/background.jpg') no-repeat center center fixed;
-            background-size: cover;
-        }
-
-        #background-video {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
-        }
-
-        .wrapper {
-            perspective: 1000px;
-        }
-
-        .container {
-            width: 360px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37),
-                        0 0 15px rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            transform-style: preserve-3d;
-            transition: transform 0.1s ease-out, box-shadow 0.3s ease, border 0.3s ease;
-        }
-
-        .container:hover {
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5),
-                        0 0 25px rgba(255, 255, 255, 0.6),
-                        0 0 40px rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-        }
-
-        h1 {
-            color: #FFFFFF;
-            font-size: 1.5rem;
             margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-
-        .form-group label {
-            color: #ddd;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .form-group input {
-            width: calc(100% - 20px);
-            margin: 0 auto;
-            padding: 10px;
             border-radius: 10px;
-            border: none;
-            outline: none;
-            font-size: 1rem;
-            background: rgba(255, 255, 255, 0.15);
-            color: #fff;
-            box-shadow: inset 0 4px 4px rgba(0, 0, 0, 0.2);
-            display: block;
-        }
+            overflow: hidden;
+         }
+         .tab-button { flex: 1; padding: 10px; background: rgba(255, 255, 255, 0.2); border: none; color: #fff; font-size: 0.9rem; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease; text-align: center; }
+         .tab-button:not(:last-child) { border-right: 1px solid rgba(255, 255, 255, 0.2); }
+         .tab-button:hover { background: rgba(255, 255, 255, 0.4); }
+         .tab-button.active { background: linear-gradient(135deg, #ff7e5f, #feb47b); color: #fff; font-weight: bold; }
+        /* --- End Tab Styles --- */
 
-        button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 20px;
-            border-radius: 20px;
-            border: none;
-            font-size: 1rem;
-            background: linear-gradient(135deg, #ff7e5f, #feb47b);
-            color: #fff;
-            cursor: pointer;
-            transition: all 0.3s ease-in-out;
-        }
-
-        button:hover {
-            background: linear-gradient(135deg, #feb47b, #ff7e5f);
-        }
-
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            color: #FFFFFF;
-            text-align: left;
+        /* --- Styles for Settings View & Withdrawal Options --- */
+        #settings-view { display: none; border-top: 1px solid rgba(255, 255, 255, 0.2); padding-top: 15px; margin-top: 15px; }
+        #withdrawal-options-container { /* No extra styles needed */ }
+        .withdrawal-option { display: flex; align-items: center; justify-content: space-between; padding: 8px 5px; margin-bottom: 8px; background-color: rgba(255, 255, 255, 0.05); border-radius: 8px; border: 1px solid transparent; overflow: hidden; transition: height 0.4s ease-in-out, opacity 0.4s ease-in-out, padding 0.4s ease-in-out, margin 0.4s ease-in-out, border-color 0.3s ease, background-color 0.3s ease; }
+        .withdrawal-option span {
             font-size: 0.9rem;
-        }
-
-        .highlight {
-            display: inline-flex;
-            align-items: center;
-            gap: 2px;
-        }
-
-        .highlight span {
-            display: inline-block;
-            font-weight: bold;
-            animation: fadeInOut 2s infinite;
-        }
-
-        .highlight span.emoji {
-            font-size: 1.2em;
-            vertical-align: middle;
-        }
-
-        .highlight.negative span {
-            color: #FF4500;
-            text-shadow: 0 0 10px #FF4500, 0 0 20px #FF6347;
-        }
-
-        .highlight.low span {
-            color: #FFD700;
-            text-shadow: 0 0 10px #FFD700, 0 0 20px #FFA500;
-        }
-
-        .highlight.positive span {
-            color: #32CD32;
-            text-shadow: 0 0 10px #32CD32, 0 0 20px #228B22;
-        }
-
-        @keyframes fadeInOut {
-            0%, 100% {
-                opacity: 0.2;
-                text-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
-            }
-            50% {
-                opacity: 1;
-                text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
-            }
-        }
-
-        @media (max-width: 768px) {
-            #background-video {
-                display: none;
-            }
-        }
-
-        .mui-style-5bd972 {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-            justify-content: flex-start;
-        }
-
-        .mui-style-1qez00d {
-            display: flex;
-            align-items: center;
-        }
-
-        .mui-style-n8n07 {
-            position: relative;
-            width: 30px;
-            height: 30px;
-            margin-right: 5px;
-        }
-
-        .mui-style-hegfm2 {
-            color: #ddd;
-            font-size: 0.9rem;
+            color: #ccc;
             margin-right: 10px;
-            transition: color 0.3s ease, text-shadow 0.3s ease;
+            display: inline-flex; /* Для выравнивания иконки и текста */
+            align-items: center; /* Для выравнивания иконки и текста */
+         }
+        .withdrawal-option.selected { border-color: rgba(104, 194, 222, 0.7); background-color: rgba(104, 194, 222, 0.1); }
+        .withdrawal-option.hidden-option { height: 0; opacity: 0; padding-top: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 0; border-width: 0; }
+        /* --- NEW: Styles for Withdrawal Icons --- */
+        .withdrawal-icon {
+            width: 1.2em; /* Размер иконки */
+            height: 1.2em; /* Размер иконки */
+            vertical-align: middle; /* Выравнивание по вертикали */
+            margin-right: 8px; /* Отступ справа от иконки */
+            object-fit: contain; /* Масштабирование с сохранением пропорций */
         }
-        .mui-style-hegfm2.low {
-            color: #FFD700;
-             text-shadow: 0 0 10px #FFD700, 0 0 20px #FFA500;
-        }
+        /* --- End Withdrawal Styles --- */
 
-        .mui-style-hegfm2.positive {
-            color: #32CD32;
-            text-shadow: 0 0 10px #32CD32, 0 0 20px #228B22;
-        }
+        /* --- Styles for USDT Modal --- */
+        .usdt-icon { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background-color: #3a3a3a; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); cursor: pointer; transition: transform 0.3s, background-color 0.3s; z-index: 998; }
+        /* --- ИЗМЕНЕНИЕ 5: Используем эмодзи --- */
+        .usdt-icon span { color: white; font-size: 1.8em; /* Немного увеличил для эмодзи */ font-weight: normal; /* Убрал bold, т.к. эмодзи уже жирные */ line-height: 1; }
+        /* --- Конец ИЗМЕНЕНИЯ 5 --- */
+        .usdt-icon:hover { transform: scale(1.1); background-color: #4a4a4a; }
+        .usdt-modal { position: fixed; bottom: -100%; right: 50px; width: 600px; background: #2a2a3d; border-radius: 10px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); padding: 20px; display: flex; flex-direction: column; opacity: 0; transform: translateY(100%); transition: all 0.5s ease-in-out; z-index: 1000; color: #ccc; }
+        .usdt-modal.active { opacity: 1; transform: translateY(0); bottom: 50px; }
+        .modal-header { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
+        .modal-header label { font-size: 14px; color: #ccc; }
+        .usdt-modal .modal-header input { padding: 8px; border: 1px solid #555; border-radius: 5px; background: #1e1e2f; color: #ccc; }
+        .close-button { position: absolute; top: 10px; right: 10px; width: 15px; height: 15px; background-color: #ff5f56; border-radius: 50%; cursor: pointer; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); }
+        .close-button:hover { background-color: #ff3b30; }
+        .period-buttons { display: flex; justify-content: space-between; margin-bottom: 15px; }
+        .period-buttons button { background-color: #3a3a3a; color: #ffffff; border: none; border-radius: 8px; padding: 10px 15px; cursor: pointer; font-size: 14px; transition: background-color 0.2s ease, color 0.2s ease; flex: 1; margin: 5px; }
+        .period-buttons button.active { background-color: #555; color: #fff; }
+        .period-buttons button:hover { background-color: #444; }
+        .rate-display { font-size: 16px; font-weight: bold; color: #4caf50; text-shadow: 0 0 10px rgba(76, 175, 80, 0.7); transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; }
+        @keyframes pulse { 0% { text-shadow: 0 0 10px rgba(76, 175, 80, 0.7); } 50% { text-shadow: 0 0 20px rgba(76, 175, 80, 1); } 100% { text-shadow: 0 0 10px rgba(76, 175, 80, 0.7); } }
+        .rate-display.pulse { animation: pulse 10s infinite; }
+        /* --- End USDT Modal Styles --- */
 
-        .mui-style-yujfsp {
-            display: inline-flex;
-            align-items: center;
-            margin-left: auto;
-        }
-
-          .switch {
-            display: inline-flex;
-            align-items: center;
-            cursor: pointer;
-             -webkit-tap-highlight-color: transparent; /* Remove highlight on tap */
-        }
-        .switch input {
-            cursor: inherit;
-            position: absolute;
-            opacity: 0;
-            z-index: -1;
-            margin: 0px;
-            padding: 0px;
-            width: 100%;
-            height: 100%;
-            top: 0px;
-            left: 0px;
-        }
-
-         .switch .slider {
-            background-color: #c2c2c2;
-            border-radius: 20px;
-            width: 50px;
-            height: 28px;
-            position: relative;
-            transition: background-color 0.3s ease;
-        }
-
-        .switch .slider .thumb {
-            width: 20px;
-            height: 20px;
-            background-color: #fff;
-            border-radius: 50%;
-            position: absolute;
-            top: 4px;
-             left: 4px;
-            transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1);
-        }
-
-        .switch input:checked + .slider {
-            background-color: #68C2DE;
-        }
-        .switch input:checked + .slider .thumb {
-             transform: translateX(22px);
-        }
     </style>
 </head>
 <body>
-    <video id="background-video" autoplay loop muted playsinline>
-        <source src="resources/background.mp4" type="video/mp4">
-        Ваш браузер не поддерживает видео.
-    </video>
+    <!-- Original Background Video -->
+    <video id="background-video" autoplay loop muted playsinline> <source src="resources/background.mp4" type="video/mp4"> Ваш браузер не поддерживает видео. </video>
 
     <div class="wrapper">
         <div class="container">
             <h1>Калькулятор прибыли</h1>
-           <label class="MuiBox-root mui-style-5bd972">
+
+            <!-- Tab Buttons -->
+            <div class="button-group">
+                <button id="calculator-tab-button" class="tab-button active">💰 Калькулятор</button>
+                <button id="settings-tab-button" class="tab-button">⚙️ Настройки</button>
+            </div>
+
+            <!-- Calculator View -->
+            <div id="calculator-view">
+                <!-- Original Input Fields -->
+                <div class="form-group"> <label for="N">Цена товара в оплаченной валюте:</label> <input type="number" id="N" step="0.01"> </div>
+                <div class="form-group"> <label for="n">Курс обмена USDT в оплаченной валюте:</label> <input type="number" id="n" step="0.01"> </div>
+                <div class="form-group"> <label for="p">Актуальный курс обмена USDT:</label> <input type="number" id="p" step="0.01"> </div>
+                <div class="form-group"> <label for="M">Цена товара на сайте:</label> <input type="number" id="M" step="0.01"> </div>
+                <!-- Original Button -->
+                <button onclick="calculate()">Рассчитать</button>
+                <div id="result" class="result"></div>
+            </div>
+
+           <!-- Settings View -->
+           <div id="settings-view" style="display: none;">
+            <!-- Base Fee Toggle -->
+            <label class="MuiBox-root mui-style-5bd972">
                 <span class="MuiBox-root mui-style-1qez00d">
                     <div class="MuiBox-root mui-style-n8n07">
                         <img alt="fee-discount-badge" src="resources/ticket.png" decoding="async" data-nimg="fill" loading="lazy" style="position: absolute; height: 120%; width: 120%; inset: -2px; object-fit: cover; object-position: center center; color: transparent; user-select: none;">
                     </div>
-                    <span class="MuiTypography-root MuiTypography-14 mui-style-hegfm2 positive">Комиссия 18%</span>
+                    <span class="MuiTypography-root MuiTypography-14 mui-style-hegfm2 positive" id="base-fee-label">Комиссия 10%</span>
                 </span>
-                 <span class="MuiSwitch-root MuiSwitch-sizeMedium mui-style-yujfsp">
-                   <label class="switch">
-                      <input type="checkbox" id="fee-toggle" checked>
-                      <span class="slider">
-                         <span class="thumb"></span>
-                      </span>
-                    </label>
+                <span class="MuiSwitch-root MuiSwitch-sizeMedium mui-style-yujfsp">
+                    <label class="switch"> <input type="checkbox" id="base-fee-toggle" checked> <span class="slider"><span class="thumb"></span></span> </label>
                 </span>
             </label>
-            <div class="form-group">
-                <label for="N">Цена товара в оплаченной валюте:</label>
-                <input type="number" id="N" step="0.01">
+            <!-- Withdrawal Method Toggles -->
+            <div id="withdrawal-options-container">
+                <label style="font-size: 0.9rem; margin-bottom: 10px; display: block; color: #ddd;">Способ вывода (выберите один):</label>
+                <!-- ИСПРАВЛЕНО: Убраны теги <b> и проверен пробел -->
+                <div class="withdrawal-option" id="option-usdt">
+                    <span><img src="resources/usdt-trc20.png" alt="USDT" class="withdrawal-icon"> USDT (TRC20) - 5%</span>
+                    <label class="switch"> <input type="checkbox" class="withdrawal-toggle" data-fee="5" id="toggle-usdt"> <span class="slider"><span class="thumb"></span></span> </label>
+                </div>
+                <div class="withdrawal-option" id="option-card">
+                    <span><img src="resources/card-ru.svg" alt="Карта РФ" class="withdrawal-icon"> Банковская карта РФ - 6%</span>
+                    <label class="switch"> <input type="checkbox" class="withdrawal-toggle" data-fee="6" id="toggle-card"> <span class="slider"><span class="thumb"></span></span> </label>
+                </div>
+                <div class="withdrawal-option" id="option-youmoney">
+                    <span><img src="resources/UMoney.svg" alt="ЮMoney" class="withdrawal-icon"> ЮMoney - 6%</span>
+                    <label class="switch"> <input type="checkbox" class="withdrawal-toggle" data-fee="6" id="toggle-youmoney"> <span class="slider"><span class="thumb"></span></span> </label>
+                </div>
+                <div class="withdrawal-option" id="option-foreign">
+                    <span><img src="resources/card.png" alt="Ин. карта" class="withdrawal-icon"> Иностранная карта - 10%</span>
+                    <label class="switch"> <input type="checkbox" class="withdrawal-toggle" data-fee="10" id="toggle-foreign"> <span class="slider"><span class="thumb"></span></span> </label>
+                </div>
+                <!-- Конец исправления -->
             </div>
-            <div class="form-group">
-                <label for="n">Курс обмена USDT в оплаченной валюте:</label>
-                <input type="number" id="n" step="0.01">
+        </div> <!-- End Settings View -->
+        </div> <!-- End Container -->
+    </div> <!-- End Wrapper -->
+
+    <!-- ============================================= -->
+    <!-- MODAL CODE STARTS HERE                      -->
+    <!-- ============================================= -->
+
+    <!-- Иконка для вызова окна USDT -->
+    <!-- ИЗМЕНЕНИЕ 5: Иконка доллара заменена на эмодзи -->
+    <div class="usdt-icon" onclick="toggleModal()"> <span>💲</span> </div>
+    <!-- Конец ИЗМЕНЕНИЯ 5 -->
+
+    <!-- Окно с графиком USDT -->
+    <div class="usdt-modal" id="usdt-modal">
+        <div class="modal-header">
+            <div class="close-button" onclick="closeModal()"></div>
+            <div>
+                <label for="usdt-amount">Введите количество USDT:</label>
+                <input type="number" id="usdt-amount" placeholder="Количество USDT" value="1" oninput="updateChartValues()" />
             </div>
-            <div class="form-group">
-                <label for="p">Актуальный курс обмена USDT:</label>
-                <input type="number" id="p" step="0.01">
+            <div>
+                <label for="manual-date">Введите дату (ДД.ММ.ГГГГ):</label>
+                <input type="text" id="manual-date" placeholder="ДД.ММ.ГГГГ" oninput="validateAndUpdateDate()" />
             </div>
-            <div class="form-group">
-                <label for="M">Цена товара на сайте:</label>
-                <input type="number" id="M" step="0.01">
-            </div>
-            <button onclick="calculate()">Рассчитать</button>
-            <div id="result" class="result"></div>
+            <span id="current-rate" class="rate-display">Загрузка...</span>
         </div>
+        <div class="period-buttons">
+            <button onclick="updatePeriod('1')" id="btn-day">День</button>
+            <button onclick="updatePeriod('7')" id="btn-week">Неделя</button>
+            <button onclick="updatePeriod('30')" id="btn-month" class="active">Месяц</button>
+            <button onclick="updatePeriod('365')" id="btn-year">Год</button>
+        </div>
+        <canvas id="usdt-chart"></canvas>
     </div>
 
+    <!-- =========================================== -->
+    <!-- SCRIPTS START HERE                        -->
+    <!-- =========================================== -->
+
+    <!-- Original Main Calculator Script (Handles Tabs, Settings UI, Calculation on Button Click, Wrapper effect) -->
     <script>
-        function calculate() {
-            const N = parseFloat(document.getElementById('N').value);
-            const n = parseFloat(document.getElementById('n').value);
-            const p = parseFloat(document.getElementById('p').value);
-            const M = parseFloat(document.getElementById('M').value);
-            const feeToggle = document.getElementById('fee-toggle');
-            const isDiscountedFee = feeToggle.checked;
-
-            if (isNaN(N) || isNaN(n) || isNaN(p) || isNaN(M)) {
-                document.getElementById('result').innerText = 'Пожалуйста, заполните все поля корректно.';
-                return;
-            }
-
-            const K = N / n;
-            const S = K * p;
-            const B = isDiscountedFee ? M * 0.82 : M * 0.72;
-            const L = B - S;
-            let highlightClass = 'positive';
-            if (L < 0) {
-                highlightClass = 'negative';
-            } else if (L < 250) {
-                highlightClass = 'low';
-            }
-
-            const profitText = `Чистая прибыль: ${L.toFixed(2)} ₽`;
-            const highlightHTML = profitText
-                .split('')
-                .map(char => `<span>${char}</span>`)
-                .join('');
-
-            document.getElementById('result').innerHTML = `
-                <p>Курс USDT: ${K.toFixed(2)}</p>
-                <p>Рубли: ${S.toFixed(2)}</p>
-                <p>Прибыль с сайта: ${B.toFixed(2)}</p>
-                <p class="highlight ${highlightClass}"><span class="emoji">💰</span>${highlightHTML}</p>
-            `;
-            updateFeeLabel(isDiscountedFee);
-        }
-
-         function updateFeeLabel(isDiscounted) {
-            const feeLabel = document.querySelector('.mui-style-hegfm2');
-            feeLabel.textContent = isDiscounted ? 'Комиссия 18%' : 'Комиссия 28%';
-            feeLabel.classList.toggle('low', !isDiscounted);
-            feeLabel.classList.toggle('positive', isDiscounted);
-        }
-          const feeToggle = document.getElementById('fee-toggle');
-          feeToggle.addEventListener('change', () => {
-            const isDiscounted = feeToggle.checked;
-             updateFeeLabel(isDiscounted);
-        });
-          window.onload = () => {
-            updateFeeLabel(true);
-        };
-        const wrapper = document.querySelector('.wrapper');
-        const container = document.querySelector('.container');
-
-        wrapper.addEventListener('mousemove', (e) => {
-           const rect = container.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            const mouseX = e.clientX - centerX;
-            const mouseY = e.clientY - centerY;
-            
-            const rotateX = mouseY / 20;
-            const rotateY = mouseX / 20;
-
-            container.style.transform = `rotateX(${-rotateX}deg) rotateY(${rotateY}deg) `;
-        });
-
-        wrapper.addEventListener('mouseleave', () => {
-          container.style.transform = 'rotateX(0) rotateY(0)';
-        });
+         const baseFeeToggle=document.getElementById('base-fee-toggle'); const baseFeeLabel=document.getElementById('base-fee-label'); const withdrawalToggles=document.querySelectorAll('.withdrawal-toggle'); const withdrawalOptions=document.querySelectorAll('.withdrawal-option'); const resultDiv=document.getElementById('result'); const inputN=document.getElementById('N'); const inputn=document.getElementById('n'); const inputp=document.getElementById('p'); const inputM=document.getElementById('M'); const calculatorTabButton=document.getElementById('calculator-tab-button'); const settingsTabButton=document.getElementById('settings-tab-button'); const calculatorView=document.getElementById('calculator-view'); const settingsView=document.getElementById('settings-view');
+         function calculate(){
+             const N=parseFloat(inputN.value);
+             const n=parseFloat(inputn.value);
+             const p=parseFloat(inputp.value);
+             const M=parseFloat(inputM.value);
+             const isLowerBaseFee=baseFeeToggle?baseFeeToggle.checked:true;
+             let withdrawalFeePercent=0;
+             withdrawalToggles.forEach(toggle=>{if(toggle.checked)withdrawalFeePercent=parseFloat(toggle.dataset.fee);});
+             if(isNaN(N)||isNaN(n)||isNaN(p)||isNaN(M)){
+                 resultDiv.innerText='Пожалуйста, заполните все поля ввода корректно.';
+                 return;
+             }
+             const baseFeePercent=isLowerBaseFee?10:20;
+             const totalFeePercent=baseFeePercent+withdrawalFeePercent;
+             const totalFeeMultiplier=1-(totalFeePercent/100);
+             const K=N/n;
+             const S=K*p;
+             const B=M*totalFeeMultiplier; // Calculation for B remains
+             const L=B-S;
+             let highlightClass='positive';
+             if(L<0)highlightClass='negative';
+             else if(L<250)highlightClass='low';
+             const profitText=`Чистая прибыль: ${L.toFixed(2)} ₽`;
+             const highlightHTML=profitText.split('').map(char=>`<span>${char}</span>`).join('');
+             // --- MODIFICATION START: Removed the line displaying B ---
+             resultDiv.innerHTML=`
+                 <p>Сумма USDT для оплаты: ${K.toFixed(4)} USDT</p>
+                 <p>Стоимость в рублях (по курсу ${p?p.toFixed(2):'N/A'}): ${S.toFixed(2)} ₽</p>
+                 <p>Базовая комиссия: ${baseFeePercent}%</p>
+                 <p>Комиссия за вывод: ${withdrawalFeePercent}%</p>
+                 <p><b>Общая комиссия: ${totalFeePercent}%</b></p>
+                 <hr style="border-color: rgba(255,255,255,0.2); margin: 10px 0;">
+                 <p class="highlight ${highlightClass}"><span class="emoji">💰</span>${highlightHTML}</p>`;
+             // --- MODIFICATION END ---
+         }
+         /* --- ИЗМЕНЕНИЕ 3 (JS): Текст изменен на "Комиссия" --- */
+         function updateBaseFeeLabelVisuals(isLower){if(baseFeeLabel){baseFeeLabel.textContent=isLower?'Комиссия 10%':'Комиссия 20%';baseFeeLabel.classList.toggle('low',!isLower);baseFeeLabel.classList.toggle('positive',isLower);}}
+         /* --- Конец ИЗМЕНЕНИЯ 3 (JS) --- */
+         function handleWithdrawalToggleChange(event){const currentToggle=event.target;if(currentToggle.checked){withdrawalToggles.forEach(toggle=>{if(toggle!==currentToggle)toggle.checked=false;});updateWithdrawalOptionsVisibility(currentToggle);}else{updateWithdrawalOptionsVisibility(null);}} function updateWithdrawalOptionsVisibility(selectedToggle){withdrawalOptions.forEach(optionDiv=>{const associatedToggle=optionDiv.querySelector('.withdrawal-toggle');const shouldHide=selectedToggle&&associatedToggle!==selectedToggle;optionDiv.classList.toggle('hidden-option',shouldHide);const isSelected=selectedToggle&&associatedToggle===selectedToggle;optionDiv.classList.toggle('selected',isSelected);});} function showCalculatorView(){calculatorView.style.display='block';settingsView.style.display='none';calculatorTabButton.classList.add('active');settingsTabButton.classList.remove('active');} function showSettingsView(){calculatorView.style.display='none';settingsView.style.display='block';calculatorTabButton.classList.remove('active');settingsTabButton.classList.add('active');} if(calculatorTabButton)calculatorTabButton.addEventListener('click',showCalculatorView);if(settingsTabButton)settingsTabButton.addEventListener('click',showSettingsView);if(baseFeeToggle){baseFeeToggle.addEventListener('change',()=>{updateBaseFeeLabelVisuals(baseFeeToggle.checked);});} withdrawalToggles.forEach(toggle=>{toggle.addEventListener('change',handleWithdrawalToggleChange);}); window.addEventListener('load',()=>{if(baseFeeToggle)updateBaseFeeLabelVisuals(baseFeeToggle.checked);updateWithdrawalOptionsVisibility(null);showCalculatorView();}); const wrapper=document.querySelector('.wrapper');const container=document.querySelector('.container');if(wrapper&&container){wrapper.addEventListener('mousemove',(e)=>{const rect=container.getBoundingClientRect();const cX=rect.left+rect.width/2;const cY=rect.top+rect.height/2;const mX=e.clientX-cX;const mY=e.clientY-cY;const rX=mY/20;const rY=mX/20;container.style.transform=`rotateX(${-rX}deg) rotateY(${rY}deg)`;});wrapper.addEventListener('mouseleave',()=>{container.style.transform='rotateX(0) rotateY(0)';});}
     </script>
-</body>
-</html>
 
-<!-- Иконка для вызова окна -->
-<div class="usdt-icon" onclick="toggleModal()">
-    <span>$</span>
-</div>
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- Окно с графиком -->
-<div class="usdt-modal" id="usdt-modal">
-    <div class="modal-header">
-        <div class="close-button" onclick="closeModal()"></div>
-        <div>
-            <label for="usdt-amount">Введите количество USDT:</label>
-            <input type="number" id="usdt-amount" placeholder="Количество USDT" value="1" oninput="updateChartValues()" />
-        </div>
-        <div>
-            <label for="manual-date">Введите дату (ДД.ММ.ГГГГ):</label>
-            <input type="text" id="manual-date" placeholder="ДД.ММ.ГГГГ" oninput="validateAndUpdateDate()" />
-        </div>
-        <span id="current-rate" class="rate-display">Загрузка...</span>
-    </div>
-    <div class="period-buttons">
-        <button onclick="updatePeriod('1')" id="btn-day">День</button>
-        <button onclick="updatePeriod('7')" id="btn-week">Неделя</button>
-        <button onclick="updatePeriod('30')" id="btn-month" class="active">Месяц</button>
-        <button onclick="updatePeriod('365')" id="btn-year">Год</button>
-    </div>
-    <canvas id="usdt-chart"></canvas>
-</div>
+    <!-- USDT Modal Script -->
+    <script>
+        const modal=document.getElementById('usdt-modal');const currentRate=document.getElementById('current-rate');const usdtAmountInput=document.getElementById('usdt-amount');const dateInput=document.getElementById('manual-date');let chart;let prices=[];let labels=[];let activePeriodButton=document.getElementById('btn-month');function toggleModal(){modal.classList.toggle('active');if(modal.classList.contains('active')){loadUsdtData(30);}}function closeModal(){modal.classList.remove('active');}async function loadUsdtData(days){const rubApiUrl=days==='max'?`https://api.coingecko.com/api/v3/coins/tether/market_chart?vs_currency=rub&days=max`:`https://api.coingecko.com/api/v3/coins/tether/market_chart?vs_currency=rub&days=${days}`;try{const response=await fetch(rubApiUrl);const data=await response.json();labels=data.prices.map(price=>{const date=new Date(price[0]);return`${date.getDate()}.${date.getMonth()+1}`});prices=data.prices.map(price=>price[1]);updateCurrentRate();renderChart();}catch(error){currentRate.innerHTML='<span style="color: red;">Ошибка загрузки данных.</span>';}}function renderChart(){const ctx=document.getElementById('usdt-chart').getContext('2d');if(chart)chart.destroy();chart=new Chart(ctx,{type:'line',data:{labels:labels,datasets:[{label:'',data:prices.map(price=>price*(parseFloat(usdtAmountInput.value)||1)),borderColor:'#4caf50',backgroundColor:'rgba(76, 175, 80, 0.2)',fill:true,tension:0.1,borderWidth:2,pointRadius:0,pointHoverRadius:6,pointBackgroundColor:'#4caf50',}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{title:(tooltipItems)=>labels[tooltipItems[0].dataIndex],label:(tooltipItem)=>`${(parseFloat(usdtAmountInput.value)||1)} USDT = ${(tooltipItem.raw).toFixed(2)} ₽`},displayColors:false,backgroundColor:'#333',titleColor:'#fff',bodyColor:'#fff',borderColor:'#4caf50',borderWidth:1,}},scales:{x:{grid:{display:false},ticks:{color:'#ccc'}},y:{grid:{color:'#555'},ticks:{color:'#ccc'}}}}});}function updateCurrentRate(){if(prices.length>0){const lastPrice=prices[prices.length-1];const amount=parseFloat(usdtAmountInput.value)||1;const calculatedRate=(lastPrice*amount).toFixed(2);currentRate.innerHTML=`<img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="Tether" style="width: 20px; vertical-align: middle; margin-right: 5px;" /> ${amount} USDT = ${calculatedRate} ₽`;currentRate.classList.add('pulse');}else{currentRate.innerHTML='<span style="color: red;">Нет доступных данных.</span>';currentRate.classList.remove('pulse');}}function updateChartValues(){updateCurrentRate();if(chart){const amount=parseFloat(usdtAmountInput.value)||1;chart.data.datasets[0].data=prices.map(price=>price*amount);chart.update();}}async function validateAndUpdateDate(){const date=dateInput.value;const regex=/^\d{2}\.\d{2}\.\d{4}$/;if(!regex.test(date)){currentRate.innerHTML='<span style="color: red;">Введите дату в формате ДД.ММ.ГГГГ</span>';return;}const[day,month,year]=date.split('.');const formattedDate=`${day}-${month}-${year}`;const rubApiUrl=`https://api.coingecko.com/api/v3/coins/tether/history?date=${formattedDate}`;try{const response=await fetch(rubApiUrl);const data=await response.json();const rate=data.market_data?.current_price?.rub;if(rate){prices=[rate];updateCurrentRate();if(chart)chart.destroy();}else{currentRate.innerHTML='<span style="color: red;">Нет данных для выбранной даты.</span>';}}catch(error){currentRate.innerHTML='<span style="color: red;">Ошибка загрузки данных.</span>';}}function updatePeriod(period){loadUsdtData(period);if(activePeriodButton)activePeriodButton.classList.remove('active');const buttonId=`btn-${period==='1'?'day':period==='7'?'week':period==='30'?'month':'year'}`;activePeriodButton=document.getElementById(buttonId);if(activePeriodButton)activePeriodButton.classList.add('active');}
+    </script>
 
-<!-- Стили -->
-<style>
-    body {
-        background-color: #1e1e2f;
-        color: #ccc;
-        font-family: Arial, sans-serif;
-    }
-
-    .usdt-icon {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 50px;
-        height: 50px;
-        background-color: #3a3a3a;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-        cursor: pointer;
-        transition: transform 0.3s, background-color 0.3s;
-    }
-
-    .usdt-icon:hover {
-        transform: scale(1.1);
-        background-color: #4a4a4a;
-    }
-
-    .usdt-modal {
-        position: fixed;
-        bottom: -100%;
-        right: 50px;
-        width: 600px;
-        background: #2a2a3d;
-        border-radius: 10px;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        opacity: 0;
-        transform: translateY(100%);
-        transition: all 0.5s ease-in-out;
-    }
-
-    .usdt-modal.active {
-        opacity: 1;
-        transform: translateY(0);
-        bottom: 50px;
-    }
-
-    .modal-header {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        margin-bottom: 20px;
-    }
-
-    .modal-header label {
-        font-size: 14px;
-        color: #ccc;
-    }
-
-    .modal-header input {
-        padding: 8px;
-        border: 1px solid #555;
-        border-radius: 5px;
-        background: #1e1e2f;
-        color: #ccc;
-    }
-
-    .close-button {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        width: 15px;
-        height: 15px;
-        background-color: #ff5f56;
-        border-radius: 50%;
-        cursor: pointer;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
-
-    .close-button:hover {
-        background-color: #ff3b30;
-    }
-
-    .period-buttons {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 15px;
-    }
-
-    .period-buttons button {
-        background-color: #3a3a3a;
-        color: #ffffff;
-        border: none;
-        border-radius: 8px;
-        padding: 10px 15px;
-        cursor: pointer;
-        font-size: 14px;
-        transition: background-color 0.2s ease, color 0.2s ease;
-        flex: 1;
-        margin: 5px;
-    }
-
-    .period-buttons button.active {
-        background-color: #555;
-        color: #fff;
-    }
-
-    .period-buttons button:hover {
-        background-color: #444;
-    }
-
-    .rate-display {
-        font-size: 16px;
-        font-weight: bold;
-        color: #4caf50;
-        text-shadow: 0 0 10px rgba(76, 175, 80, 0.7);
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    /* Пульсация */
-    @keyframes pulse {
-        0% {
-            text-shadow: 0 0 10px rgba(76, 175, 80, 0.7);
-        }
-        50% {
-            text-shadow: 0 0 20px rgba(76, 175, 80, 1);
-        }
-        100% {
-            text-shadow: 0 0 10px rgba(76, 175, 80, 0.7);
-        }
-    }
-
-    .rate-display.pulse {
-        animation: pulse 10s infinite;
-    }
-</style>
-
-<!-- Скрипт -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    const modal = document.getElementById('usdt-modal');
-    const currentRate = document.getElementById('current-rate');
-    const usdtAmountInput = document.getElementById('usdt-amount');
-    const dateInput = document.getElementById('manual-date');
-    let chart;
-    let prices = [];
-    let labels = [];
-    let activePeriodButton = document.getElementById('btn-month');
-
-    function toggleModal() {
-        modal.classList.toggle('active');
-        if (modal.classList.contains('active')) {
-            loadUsdtData(30);
-        }
-    }
-
-    function closeModal() {
-        modal.classList.remove('active');
-    }
-
-    async function loadUsdtData(days) {
-        const rubApiUrl = days === 'max'
-            ? `https://api.coingecko.com/api/v3/coins/tether/market_chart?vs_currency=rub&days=max`
-            : `https://api.coingecko.com/api/v3/coins/tether/market_chart?vs_currency=rub&days=${days}`;
-
-        try {
-            const response = await fetch(rubApiUrl);
-            const data = await response.json();
-
-            labels = data.prices.map(price => {
-                const date = new Date(price[0]);
-                return `${date.getDate()}.${date.getMonth() + 1}`;
-            });
-
-            prices = data.prices.map(price => price[1]);
-
-            updateCurrentRate();
-            renderChart();
-        } catch (error) {
-            currentRate.innerHTML = '<span style="color: red;">Ошибка загрузки данных.</span>';
-        }
-    }
-
-    function renderChart() {
-        const ctx = document.getElementById('usdt-chart').getContext('2d');
-        if (chart) {
-            chart.destroy();
-        }
-
-        chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: '',
-                    data: prices.map(price => price * usdtAmountInput.value),
-                    borderColor: '#4caf50',
-                    backgroundColor: 'rgba(76, 175, 80, 0.2)',
-                    fill: true,
-                    tension: 0.1,
-                    borderWidth: 2,
-                    pointRadius: 0,
-                    pointHoverRadius: 6,
-                    pointBackgroundColor: '#4caf50',
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: false,
-                    },
-                    tooltip: {
-                        callbacks: {
-                            title: (tooltipItems) => labels[tooltipItems[0].dataIndex],
-                            label: (tooltipItem) => `${usdtAmountInput.value} USDT = ${(tooltipItem.raw).toFixed(2)} ₽`
-                        },
-                        displayColors: false,
-                        backgroundColor: '#333',
-                        titleColor: '#fff',
-                        bodyColor: '#fff',
-                        borderColor: '#4caf50',
-                        borderWidth: 1,
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: { display: false },
-                        ticks: { color: '#ccc' }
-                    },
-                    y: {
-                        grid: { color: '#555' },
-                        ticks: { color: '#ccc' }
-                    }
-                }
-            }
-        });
-    }
-
-    function updateCurrentRate() {
-        if (prices.length > 0) {
-            const lastPrice = prices[prices.length - 1];
-            const calculatedRate = (lastPrice * usdtAmountInput.value).toFixed(2);
-
-            currentRate.innerHTML = `
-                <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="Tether" style="width: 20px; vertical-align: middle; margin-right: 5px;" />
-                ${usdtAmountInput.value} USDT = ${calculatedRate} ₽
-            `;
-            currentRate.classList.add('pulse');
-        } else {
-            currentRate.innerHTML = '<span style="color: red;">Нет доступных данных.</span>';
-            currentRate.classList.remove('pulse');
-        }
-    }
-
-    usdtAmountInput.addEventListener('input', () => {
-        updateCurrentRate();
-        if (chart) {
-            chart.data.datasets[0].data = prices.map(price => price * usdtAmountInput.value);
-            chart.update();
-        }
-    });
-
-    async function validateAndUpdateDate() {
-        const date = dateInput.value;
-        const regex = /^\d{2}\.\d{2}\.\d{4}$/;
-
-        if (!regex.test(date)) {
-            currentRate.innerHTML = '<span style="color: red;">Введите дату в формате ДД.ММ.ГГГГ</span>';
-            return;
-        }
-
-        const [day, month, year] = date.split('.');
-        const formattedDate = `${day}-${month}-${year}`;
-        const rubApiUrl = `https://api.coingecko.com/api/v3/coins/tether/history?date=${formattedDate}`;
-
-        try {
-            const response = await fetch(rubApiUrl);
-            const data = await response.json();
-            const rate = data.market_data?.current_price?.rub;
-
-            if (rate) {
-                prices = [rate];
-                updateCurrentRate();
-            } else {
-                currentRate.innerHTML = '<span style="color: red;">Нет данных для выбранной даты.</span>';
-            }
-        } catch (error) {
-            currentRate.innerHTML = '<span style="color: red;">Ошибка загрузки данных.</span>';
-        }
-    }
-
-    function updatePeriod(period) {
-        loadUsdtData(period);
-
-        if (activePeriodButton) {
-            activePeriodButton.classList.remove('active');
-        }
-        activePeriodButton = document.querySelector(`#btn-${period === 'max' ? 'all' : period}`);
-        if (activePeriodButton) {
-            activePeriodButton.classList.add('active');
-        }
-    }
-</script>
-
-<script>
-    // Дождаться загрузки страницы
-    document.addEventListener('DOMContentLoaded', function () {
-        // Создать контейнер для иконок в нижнем правом углу, если он ещё не существует
-        let iconContainer = document.querySelector('.bottom-right-icon-container');
-        if (!iconContainer) {
-            iconContainer = document.createElement('div');
-            iconContainer.className = 'bottom-right-icon-container';
-            iconContainer.style.position = 'fixed';
-            iconContainer.style.bottom = '19px';  // Позиция контейнера
-            iconContainer.style.right = '80px';   // Позиция контейнера
-            iconContainer.style.display = 'flex';
-            iconContainer.style.flexDirection = 'row-reverse'; // Расположить иконки справа налево
-            iconContainer.style.gap = '10px'; // Расстояние между иконками
-            iconContainer.style.zIndex = '1000';
-            document.body.appendChild(iconContainer);
-        }
-
-        // Переменная для размера иконки (можно изменить размер здесь)
-        const iconSize = 47;  // Задайте размер иконки, например, 50px
-
-        // Создать новую круглую иконку
-        const newIcon = document.createElement('img');
-        newIcon.src = 'https://s3.leans.fun/avatars/7fa0a365-e3f9-4926-bd05-fbb352a5fe65.gif?w=128'; // Новый источник для иконки
-        newIcon.alt = 'New Icon';
-        newIcon.style.width = `${iconSize}px`;  // Используем заданный размер
-        newIcon.style.height = `${iconSize}px`; // Используем заданный размер
-        newIcon.style.cursor = 'pointer';
-        newIcon.style.borderRadius = '50%'; // Делает иконку круглой
-        newIcon.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)'; // Лёгкая тень для красоты
-        newIcon.style.border = '2px solid #d3d3d3'; // Серая обводка вокруг иконки
-
-     // Добавить плавную анимацию изменения размера
-     newIcon.style.transition = 'transform 0.3s ease'; // Плавное изменение размера
-
-     // Добавить эффекты наведения
-    newIcon.addEventListener('mouseenter', () => {
-    newIcon.style.transform = 'scale(1.1)'; // Увеличить иконку
-    });
-
-    newIcon.addEventListener('mouseleave', () => {
-    newIcon.style.transform = 'scale(1)'; // Вернуть размер назад
-    });
-
-        // Создать размытие для заднего плана
-        const backdrop = document.createElement('div');
-        backdrop.style.position = 'fixed';
-        backdrop.style.top = '0';
-        backdrop.style.left = '0';
-        backdrop.style.width = '100%';
-        backdrop.style.height = '100%';
-        backdrop.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-        backdrop.style.backdropFilter = 'blur(10px)';
-        backdrop.style.zIndex = '1000';
-        backdrop.style.display = 'none';
-
-        // Создать модальное окно
-        const modal = document.createElement('div');
-        modal.style.position = 'fixed';
-        modal.style.top = '50%';
-        modal.style.left = '50%';
-        modal.style.transform = 'translate(-50%, -50%)';
-        modal.style.width = '80%';
-        modal.style.height = '80%';
-        modal.style.backgroundColor = '#f8f8f8';
-        modal.style.borderRadius = '12px';
-        modal.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
-        modal.style.overflow = 'hidden';
-        modal.style.zIndex = '1001';
-        modal.style.display = 'none';
-        modal.style.border = '1px solid #ccc';
-
-        // Создать заголовок модального окна, имитирующий интерфейс MacOS
-        const modalHeader = document.createElement('div');
-        modalHeader.style.height = '30px';
-        modalHeader.style.backgroundColor = '#ebebeb';
-        modalHeader.style.borderBottom = '1px solid #dcdcdc';
-        modalHeader.style.display = 'flex';
-        modalHeader.style.alignItems = 'center';
-        modalHeader.style.padding = '0 10px';
-
-        // Кнопка закрытия в стиле MacOS (перемещаем её в правую сторону)
-        const closeButton = document.createElement('div');
-        closeButton.style.width = '12px';
-        closeButton.style.height = '12px';
-        closeButton.style.borderRadius = '50%';
-        closeButton.style.backgroundColor = '#ff5f57';
-        closeButton.style.marginLeft = 'auto'; // Сдвиг в правую часть контейнера
-        closeButton.style.cursor = 'pointer';
-
-        // Закрытие модального окна
-        closeButton.addEventListener('click', function () {
-            modal.style.display = 'none';
-            backdrop.style.display = 'none';
-        });
-
-        // Добавить кнопку в заголовок
-        modalHeader.appendChild(closeButton);
-
-        // Добавить iframe для отображения страницы
-        const iframe = document.createElement('iframe');
-        iframe.src = 'https://leans.fun/westyasha'; // Замените на URL вашей страницы
-        iframe.style.width = '100%';
-        iframe.style.height = 'calc(100% - 30px)'; // Учесть высоту заголовка
-        iframe.style.border = 'none';
-
-        // Сборка модального окна
-        modal.appendChild(modalHeader);
-        modal.appendChild(iframe);
-
-        // Добавить элементы на страницу
-        document.body.appendChild(backdrop);
-        document.body.appendChild(modal);
-
-        // Открытие модального окна
-        newIcon.addEventListener('click', function () {
-            modal.style.display = 'block';
-            backdrop.style.display = 'block';
-        });
-
-        // Добавить новую иконку в контейнер
-        iconContainer.appendChild(newIcon);
-    });
-</script>
+    <!-- Leans Fun Icon and Modal Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded',function(){let iconContainer=document.querySelector('.bottom-right-icon-container');if(!iconContainer){iconContainer=document.createElement('div');iconContainer.className='bottom-right-icon-container';Object.assign(iconContainer.style,{position:'fixed',bottom:'19px',right:'80px',display:'flex',flexDirection:'row-reverse',gap:'10px',zIndex:'999'});document.body.appendChild(iconContainer);}const iconSize=47;const newIcon=document.createElement('img');newIcon.src='https://s3.leans.fun/avatars/7fa0a365-e3f9-4926-bd05-fbb352a5fe65.gif?w=128';newIcon.alt='New Icon';Object.assign(newIcon.style,{width:`${iconSize}px`,height:`${iconSize}px`,cursor:'pointer',borderRadius:'50%',boxShadow:'0 2px 4px rgba(0, 0, 0, 0.2)',border:'2px solid #d3d3d3',transition:'transform 0.3s ease'});newIcon.addEventListener('mouseenter',()=>{newIcon.style.transform='scale(1.1)';});newIcon.addEventListener('mouseleave',()=>{newIcon.style.transform='scale(1)';});const backdrop=document.createElement('div');Object.assign(backdrop.style,{position:'fixed',top:'0',left:'0',width:'100%',height:'100%',backgroundColor:'rgba(0, 0, 0, 0.5)',backdropFilter:'blur(10px)',zIndex:'1000',display:'none'});const modalLeans=document.createElement('div');Object.assign(modalLeans.style,{position:'fixed',top:'50%',left:'50%',transform:'translate(-50%, -50%)',width:'80%',height:'80%',backgroundColor:'#f8f8f8',borderRadius:'12px',boxShadow:'0 4px 12px rgba(0, 0, 0, 0.2)',overflow:'hidden',zIndex:'1001',display:'none',border:'1px solid #ccc'});const modalHeader=document.createElement('div');Object.assign(modalHeader.style,{height:'30px',backgroundColor:'#ebebeb',borderBottom:'1px solid #dcdcdc',display:'flex',alignItems:'center',padding:'0 10px'});const closeButton=document.createElement('div');Object.assign(closeButton.style,{width:'12px',height:'12px',borderRadius:'50%',backgroundColor:'#ff5f57',marginLeft:'auto',cursor:'pointer'});closeButton.addEventListener('click',function(){modalLeans.style.display='none';backdrop.style.display='none';});modalHeader.appendChild(closeButton);const iframe=document.createElement('iframe');iframe.src='https://leans.fun/westyasha';Object.assign(iframe.style,{width:'100%',height:'calc(100% - 30px)',border:'none'});modalLeans.appendChild(modalHeader);modalLeans.appendChild(iframe);document.body.appendChild(backdrop);document.body.appendChild(modalLeans);newIcon.addEventListener('click',function(){modalLeans.style.display='block';backdrop.style.display='block';});iconContainer.appendChild(newIcon);});
+    </script>
 
 </body>
 </html>
