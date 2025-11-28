@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Original Meta Tags -->
     <meta property="og:title" content="Калькулятор прибыли">
     <meta property="og:site_name" content="Калькулятор прибыли" />
     <meta property="og:description" content="Это калькулятор прибыли." />
@@ -15,251 +14,522 @@
     <meta property="og:image:alt" content="Avatar Image" />
     <title>Калькулятор прибыли</title>
     <link rel="icon" href="resources/favicon.ico" type="image/x-icon">
-    <!-- Original Calculator CSS + Tab/Settings CSS -->
     <style>
-        /* --- Original Base Styles --- */
-        body { margin: 0; padding: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; font-family: 'Arial', sans-serif; overflow-x: hidden; background: url('resources/background.jpg') no-repeat center center fixed; background-size: cover; color: #ddd; }
+        body { margin: 0; padding: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; overflow-x: hidden; background: url('resources/background.jpg') no-repeat center center fixed; background-size: cover; color: #eee; }
         #background-video { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
-        .wrapper { perspective: 1000px; margin-top: 20px; margin-bottom: 20px; }
-        .container { width: 380px; padding: 20px; background: rgba(255, 255, 255, 0.1); border-radius: 20px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37), 0 0 15px rgba(255, 255, 255, 0.3); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.18); transform-style: preserve-3d; transition: transform 0.1s ease-out, box-shadow 0.3s ease, border 0.3s ease; }
-        .container:hover { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.8); border: 1px solid rgba(255, 255, 255, 0.4); }
-        h1 { color: #FFFFFF; font-size: 1.5rem; margin-bottom: 15px; /* Подняты кнопки */ text-align: center; }
-        /* Original Form Styles */
-        .form-group { margin-bottom: 15px; text-align: left; }
-        .form-group label { color: #ddd; font-size: 0.9rem; margin-bottom: 5px; display: block; }
-        .form-group input { width: calc(100% - 20px); margin: 0 auto; padding: 10px; border-radius: 10px; border: none; outline: none; font-size: 1rem; background: rgba(255, 255, 255, 0.15); color: #fff; box-shadow: inset 0 4px 4px rgba(0, 0, 0, 0.2); display: block; }
-        /* Original Button */
-        button { width: 100%; padding: 10px; margin-top: 20px; border-radius: 20px; border: none; font-size: 1rem; background: linear-gradient(135deg, #ff7e5f, #feb47b); color: #fff; cursor: pointer; transition: all 0.3s ease-in-out; }
-        button:hover { background: linear-gradient(135deg, #feb47b, #ff7e5f); }
-        /* Original Result (Height auto) */
-        .result { margin-top: 20px; padding: 15px; background: rgba(0, 0, 0, 0.5); border-radius: 10px; color: #FFFFFF; text-align: left; font-size: 0.9rem; /* min-height убрана */ }
-        /* Original Highlight styles */
-        .highlight { display: inline-flex; align-items: center; gap: 2px; } .highlight span { display: inline-block; font-weight: bold; animation: fadeInOut 2s infinite; } .highlight span.emoji { font-size: 1.2em; vertical-align: middle; } .highlight.negative span { color: #FF4500; text-shadow: 0 0 10px #FF4500, 0 0 20px #FF6347; } .highlight.low span { color: #FFD700; text-shadow: 0 0 10px #FFD700, 0 0 20px #FFA500; } .highlight.positive span { color: #32CD32; text-shadow: 0 0 10px #32CD32, 0 0 20px #228B22; } @keyframes fadeInOut { 0%, 100% { opacity: 0.2; text-shadow: 0 0 5px currentColor, 0 0 10px currentColor; } 50% { opacity: 1; text-shadow: 0 0 20px currentColor, 0 0 40px currentColor; } }
-        /* Original Media Query */
-         @media (max-width: 768px) { #background-video { display: none; } body { background: linear-gradient(135deg, #6e8efb, #a777e3); } .container { width: 90%; } }
-        /* Original Base Fee Toggle styles (MUI-like) */
-        .mui-style-5bd972 { display: flex; align-items: center; margin-bottom: 10px; justify-content: flex-start; } .mui-style-1qez00d { display: flex; align-items: center; } .mui-style-n8n07 { position: relative; width: 30px; height: 30px; margin-right: 5px; } .mui-style-n8n07 img { position: absolute; height: 120%; width: 120%; inset: -2px; object-fit: cover; object-position: center center; color: transparent; user-select: none; } .mui-style-hegfm2 { color: #ddd; font-size: 0.9rem; margin-right: 10px; transition: color 0.3s ease, text-shadow 0.3s ease; } .mui-style-hegfm2.low { color: #FFD700; text-shadow: 0 0 10px #FFD700, 0 0 20px #FFA500; } .mui-style-hegfm2.positive { color: #32CD32; text-shadow: 0 0 10px #32CD32, 0 0 20px #228B22; } .mui-style-yujfsp { display: inline-flex; align-items: center; margin-left: auto; }
-        /* Original Switch Styles */
-         .switch { display: inline-flex; align-items: center; cursor: pointer; -webkit-tap-highlight-color: transparent; position: relative; vertical-align: middle; } .switch input { cursor: inherit; position: absolute; opacity: 0; z-index: 1; margin: 0px; padding: 0px; width: 100%; height: 100%; top: 0px; left: 0px; } .switch .slider { background-color: #c2c2c2; border-radius: 20px; width: 50px; height: 28px; position: relative; transition: background-color 0.3s ease; } .switch .slider .thumb { width: 20px; height: 20px; background-color: #fff; border-radius: 50%; position: absolute; top: 4px; left: 4px; transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1); } .switch input:checked + .slider { background-color: #68C2DE; } .switch input:checked + .slider .thumb { transform: translateX(22px); } #base-fee-toggle:checked + .slider { background-color: #68C2DE; }
+        
+        .wrapper { width: 100%; display: flex; justify-content: center; padding: 20px; box-sizing: border-box; }
+        
+        .container { 
+            width: 400px; 
+            padding: 30px; 
+            background: rgba(255, 255, 255, 0.05); 
+            border-radius: 24px; 
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+        }
 
-        /* --- Styles for Tabs --- */
-         .button-group {
-            display: flex;
-            margin-bottom: 20px;
-            border-radius: 10px;
+        .container:hover {
+            box-shadow: 0 0 50px rgba(110, 142, 251, 0.2), 0 0 20px rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        h1 { color: #fff; font-size: 1.8rem; margin: 0 0 25px 0; text-align: center; font-weight: 600; letter-spacing: 0.5px; }
+
+        .button-group { display: flex; margin-bottom: 25px; background: rgba(0,0,0,0.2); border-radius: 16px; padding: 5px; }
+        .tab-button { flex: 1; padding: 12px; background: transparent; border: none; color: #aaa; font-size: 0.95rem; cursor: pointer; border-radius: 12px; transition: all 0.3s ease; font-weight: 500; }
+        .tab-button.active { background: rgba(255, 255, 255, 0.1); color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .tab-button:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.05); }
+
+        .form-group { margin-bottom: 20px; position: relative; }
+        .form-group label { color: #ccc; font-size: 0.85rem; margin-bottom: 8px; display: block; margin-left: 5px; }
+        .form-group input { 
+            width: 100%; 
+            padding: 14px 15px; 
+            border-radius: 16px; 
+            border: 1px solid rgba(255,255,255,0.08); 
+            outline: none; 
+            font-size: 1rem; 
+            background: rgba(0, 0, 0, 0.2); 
+            color: #fff; 
+            box-sizing: border-box;
+            transition: all 0.3s ease; 
+        }
+        .form-group input:focus { background: rgba(0, 0, 0, 0.3); border-color: #6e8efb; box-shadow: 0 0 15px rgba(110, 142, 251, 0.15); }
+
+        button.action-btn { 
+            width: 100%; 
+            padding: 14px; 
+            margin-top: 10px; 
+            border-radius: 16px; 
+            border: none; 
+            font-size: 1.05rem; 
+            font-weight: 600; 
+            background: linear-gradient(135deg, #ff7e5f, #feb47b); 
+            color: #fff; 
+            cursor: pointer; 
+            transition: transform 0.2s, box-shadow 0.2s; 
+            box-shadow: 0 4px 15px rgba(255, 126, 95, 0.3); 
+        }
+        button.action-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 126, 95, 0.5); }
+        button.action-btn:active { transform: scale(0.98); }
+
+        .details-container {
+            margin-top: 25px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
             overflow: hidden;
-         }
-         .tab-button { flex: 1; padding: 10px; background: rgba(255, 255, 255, 0.2); border: none; color: #fff; font-size: 0.9rem; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease; text-align: center; }
-         .tab-button:not(:last-child) { border-right: 1px solid rgba(255, 255, 255, 0.2); }
-         .tab-button:hover { background: rgba(255, 255, 255, 0.4); }
-         .tab-button.active { background: linear-gradient(135deg, #ff7e5f, #feb47b); color: #fff; font-weight: bold; }
-        /* --- End Tab Styles --- */
-
-        /* --- Styles for Settings View & Withdrawal Options --- */
-        #settings-view { display: none; border-top: 1px solid rgba(255, 255, 255, 0.2); padding-top: 15px; margin-top: 15px; }
-        #withdrawal-options-container { /* No extra styles needed */ }
-        .withdrawal-option { display: flex; align-items: center; justify-content: space-between; padding: 8px 5px; margin-bottom: 8px; background-color: rgba(255, 255, 255, 0.05); border-radius: 8px; border: 1px solid transparent; overflow: hidden; transition: height 0.4s ease-in-out, opacity 0.4s ease-in-out, padding 0.4s ease-in-out, margin 0.4s ease-in-out, border-color 0.3s ease, background-color 0.3s ease; }
-        .withdrawal-option span {
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .details-header {
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 0.9rem;
             color: #ccc;
-            margin-right: 10px;
-            display: inline-flex; /* Для выравнивания иконки и текста */
-            align-items: center; /* Для выравнивания иконки и текста */
-         }
-        .withdrawal-option.selected { border-color: rgba(104, 194, 222, 0.7); background-color: rgba(104, 194, 222, 0.1); }
-        .withdrawal-option.hidden-option { height: 0; opacity: 0; padding-top: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 0; border-width: 0; }
-        /* --- NEW: Styles for Withdrawal Icons --- */
-        .withdrawal-icon {
-            width: 1.2em; /* Размер иконки */
-            height: 1.2em; /* Размер иконки */
-            vertical-align: middle; /* Выравнивание по вертикали */
-            margin-right: 8px; /* Отступ справа от иконки */
-            object-fit: contain; /* Масштабирование с сохранением пропорций */
+            background: rgba(255,255,255,0.02);
+            transition: background 0.3s;
+            user-select: none;
         }
-        /* --- End Withdrawal Styles --- */
+        .details-header:hover { background: rgba(255,255,255,0.08); color: #fff; }
+        .details-header .icon { margin-right: 8px; font-size: 1.1em; }
+        .details-header .arrow { margin-left: 8px; transition: transform 0.3s ease; font-size: 0.8em; }
+        .details-container.open .arrow { transform: rotate(180deg); }
 
-        /* --- Styles for USDT Modal --- */
-        .usdt-icon { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background-color: #3a3a3a; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); cursor: pointer; transition: transform 0.3s, background-color 0.3s; z-index: 998; }
-        /* --- ИЗМЕНЕНИЕ 5: Используем эмодзи --- */
-        .usdt-icon span { color: white; font-size: 1.8em; /* Немного увеличил для эмодзи */ font-weight: normal; /* Убрал bold, т.к. эмодзи уже жирные */ line-height: 1; }
-        /* --- Конец ИЗМЕНЕНИЯ 5 --- */
-        .usdt-icon:hover { transform: scale(1.1); background-color: #4a4a4a; }
-        .usdt-modal { position: fixed; bottom: -100%; right: 50px; width: 600px; background: #2a2a3d; border-radius: 10px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); padding: 20px; display: flex; flex-direction: column; opacity: 0; transform: translateY(100%); transition: all 0.5s ease-in-out; z-index: 1000; color: #ccc; }
-        .usdt-modal.active { opacity: 1; transform: translateY(0); bottom: 50px; }
-        .modal-header { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
-        .modal-header label { font-size: 14px; color: #ccc; }
-        .usdt-modal .modal-header input { padding: 8px; border: 1px solid #555; border-radius: 5px; background: #1e1e2f; color: #ccc; }
-        .close-button { position: absolute; top: 10px; right: 10px; width: 15px; height: 15px; background-color: #ff5f56; border-radius: 50%; cursor: pointer; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); }
-        .close-button:hover { background-color: #ff3b30; }
-        .period-buttons { display: flex; justify-content: space-between; margin-bottom: 15px; }
-        .period-buttons button { background-color: #3a3a3a; color: #ffffff; border: none; border-radius: 8px; padding: 10px 15px; cursor: pointer; font-size: 14px; transition: background-color 0.2s ease, color 0.2s ease; flex: 1; margin: 5px; }
-        .period-buttons button.active { background-color: #555; color: #fff; }
-        .period-buttons button:hover { background-color: #444; }
-        .rate-display { font-size: 16px; font-weight: bold; color: #4caf50; text-shadow: 0 0 10px rgba(76, 175, 80, 0.7); transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; }
-        @keyframes pulse { 0% { text-shadow: 0 0 10px rgba(76, 175, 80, 0.7); } 50% { text-shadow: 0 0 20px rgba(76, 175, 80, 1); } 100% { text-shadow: 0 0 10px rgba(76, 175, 80, 0.7); } }
-        .rate-display.pulse { animation: pulse 10s infinite; }
-        /* --- End USDT Modal Styles --- */
+        .details-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+            background: rgba(0,0,0,0.1);
+        }
+        .details-container.open .details-body { max-height: 500px; transition: max-height 0.5s ease-in-out; }
+        
+        .details-content { padding: 15px; font-size: 0.9rem; color: #ddd; line-height: 1.6; }
+        .detail-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-row span:last-child { font-weight: 500; color: #fff; }
 
+        .profit-result {
+            margin-top: 15px;
+            text-align: center;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            animation: fadeIn 0.5s ease;
+        }
+        .profit-value { font-size: 1.4rem; font-weight: bold; margin-top: 5px; display: inline-flex; align-items: center; gap: 8px; }
+        .positive { color: #4cd964; text-shadow: 0 0 20px rgba(76, 217, 100, 0.4); }
+        .low { color: #ffcc00; text-shadow: 0 0 20px rgba(255, 204, 0, 0.4); }
+        .negative { color: #ff3b30; text-shadow: 0 0 20px rgba(255, 59, 48, 0.4); }
+
+        .settings-item { display: flex; align-items: center; justify-content: space-between; padding: 15px; margin-bottom: 10px; background: rgba(255,255,255,0.03); border-radius: 14px; border: 1px solid transparent; transition: all 0.3s; }
+        .settings-item:hover { background: rgba(255,255,255,0.08); }
+        .settings-item.active { border-color: #68C2DE; background: rgba(104, 194, 222, 0.1); }
+        .settings-label { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; }
+        .settings-icon { width: 28px; height: 28px; object-fit: contain; }
+
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.2); transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        input:checked + .slider { background-color: #68C2DE; }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        .bottom-link { position: fixed; bottom: 20px; right: 80px; z-index: 100; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .bottom-link img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .bottom-link:hover { transform: scale(1.15) rotate(5deg); }
+
+        .usdt-trigger { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: rgba(40, 40, 40, 0.8); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: all 0.3s; z-index: 99; font-size: 1.5rem; }
+        .usdt-trigger:hover { transform: scale(1.1); background: rgba(60, 60, 60, 0.9); }
+
+        .usdt-modal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+            width: 90%; max-width: 550px;
+            background: rgba(30, 30, 40, 0.65);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 30px;
+            opacity: 0; pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1000;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .usdt-modal.active { opacity: 1; pointer-events: all; transform: translate(-50%, -50%) scale(1); }
+        
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); opacity: 0; pointer-events: none; transition: opacity 0.4s; z-index: 999; }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .close-modal { background: #ff5f56; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; transition: transform 0.2s; }
+        .close-modal:hover { transform: scale(1.1); }
+
+        .chart-controls { display: flex; gap: 10px; margin-bottom: 20px; }
+        .chart-btn { flex: 1; padding: 8px; background: rgba(255,255,255,0.05); border: none; color: #ccc; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .chart-btn.active { background: #4caf50; color: white; }
+        
+        .rate-display { font-size: 1.2rem; font-weight: bold; color: #4caf50; margin-bottom: 15px; text-align: center; text-shadow: 0 0 15px rgba(76,175,80,0.5); }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) { #background-video { display: none; } body { background: linear-gradient(135deg, #1a1a2e, #16213e); } .container { width: 90%; padding: 20px; } }
     </style>
 </head>
 <body>
-    <!-- Original Background Video -->
-    <video id="background-video" autoplay loop muted playsinline> <source src="resources/background.mp4" type="video/mp4"> Ваш браузер не поддерживает видео. </video>
+    <video id="background-video" autoplay loop muted playsinline>
+        <source src="resources/background.mp4" type="video/mp4">
+    </video>
 
     <div class="wrapper">
         <div class="container">
             <h1>Калькулятор прибыли</h1>
 
-            <!-- Tab Buttons -->
             <div class="button-group">
-                <button id="calculator-tab-button" class="tab-button active">💰 Калькулятор</button>
-                <button id="settings-tab-button" class="tab-button">⚙️ Настройки</button>
+                <button id="tab-calc" class="tab-button active" onclick="switchTab('calc')">💰 Калькулятор</button>
+                <button id="tab-settings" class="tab-button" onclick="switchTab('settings')">⚙️ Настройки</button>
             </div>
 
-            <!-- Calculator View -->
-            <div id="calculator-view">
-                <!-- Original Input Fields -->
-                <div class="form-group"> <label for="N">Цена товара в оплаченной валюте:</label> <input type="number" id="N" step="0.01"> </div>
-                <div class="form-group"> <label for="n">Курс обмена USDT в оплаченной валюте:</label> <input type="number" id="n" step="0.01"> </div>
-                <div class="form-group"> <label for="p">Актуальный курс обмена USDT:</label> <input type="number" id="p" step="0.01"> </div>
-                <div class="form-group"> <label for="M">Цена товара на сайте:</label> <input type="number" id="M" step="0.01"> </div>
-                <!-- Original Button -->
-                <button onclick="calculate()">Рассчитать</button>
-                <div id="result" class="result"></div>
-            </div>
+            <div id="view-calc">
+                <div class="form-group">
+                    <label>Цена товара в оплаченной валюте:</label>
+                    <input type="number" id="N" step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label>Курс обмена USDT в валюте оплаты:</label>
+                    <input type="number" id="n" step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label>Актуальный курс обмена USDT (₽):</label>
+                    <input type="number" id="p" step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label>Цена товара на сайте (₽):</label>
+                    <input type="number" id="M" step="0.01" placeholder="0.00">
+                </div>
+                
+                <button class="action-btn" onclick="calculate()">Рассчитать</button>
 
-           <!-- Settings View -->
-           <div id="settings-view" style="display: none;">
-            <!-- Base Fee Toggle -->
-            <label class="MuiBox-root mui-style-5bd972">
-                <span class="MuiBox-root mui-style-1qez00d">
-                    <div class="MuiBox-root mui-style-n8n07">
-                        <img alt="fee-discount-badge" src="resources/ticket.png" decoding="async" data-nimg="fill" loading="lazy" style="position: absolute; height: 120%; width: 120%; inset: -2px; object-fit: cover; object-position: center center; color: transparent; user-select: none;">
+                <div id="result-area" style="display: none;">
+                    <div class="details-container" id="details-container">
+                        <div class="details-header" onclick="toggleDetails()">
+                            <span class="icon">ℹ️</span> Детали расчетов <span class="arrow">▼</span>
+                        </div>
+                        <div class="details-body">
+                            <div class="details-content" id="details-content"></div>
+                        </div>
                     </div>
-                    <span class="MuiTypography-root MuiTypography-14 mui-style-hegfm2 positive" id="base-fee-label">Комиссия 10%</span>
-                </span>
-                <span class="MuiSwitch-root MuiSwitch-sizeMedium mui-style-yujfsp">
-                    <label class="switch"> <input type="checkbox" id="base-fee-toggle" checked> <span class="slider"><span class="thumb"></span></span> </label>
-                </span>
-            </label>
-            <!-- Withdrawal Method Toggles -->
-            <div id="withdrawal-options-container">
-                <label style="font-size: 0.9rem; margin-bottom: 10px; display: block; color: #ddd;">Способ вывода (выберите один):</label>
-                <!-- ИСПРАВЛЕНО: Убраны теги <b> и проверен пробел -->
-                <div class="withdrawal-option" id="option-usdt">
-                    <span><img src="resources/usdt-trc20.png" alt="USDT" class="withdrawal-icon"> USDT (TRC20) - 5%</span>
-                    <label class="switch"> <input type="checkbox" class="withdrawal-toggle" data-fee="5" id="toggle-usdt"> <span class="slider"><span class="thumb"></span></span> </label>
+                    <div class="profit-result" id="profit-result"></div>
                 </div>
-                <div class="withdrawal-option" id="option-card">
-                    <span><img src="resources/card-ru.svg" alt="Карта РФ" class="withdrawal-icon"> Банковская карта РФ - 6%</span>
-                    <label class="switch"> <input type="checkbox" class="withdrawal-toggle" data-fee="6" id="toggle-card"> <span class="slider"><span class="thumb"></span></span> </label>
-                </div>
-                <div class="withdrawal-option" id="option-youmoney">
-                    <span><img src="resources/UMoney.svg" alt="ЮMoney" class="withdrawal-icon"> ЮMoney - 6%</span>
-                    <label class="switch"> <input type="checkbox" class="withdrawal-toggle" data-fee="6" id="toggle-youmoney"> <span class="slider"><span class="thumb"></span></span> </label>
-                </div>
-                <div class="withdrawal-option" id="option-foreign">
-                    <span><img src="resources/card.png" alt="Ин. карта" class="withdrawal-icon"> Иностранная карта - 10%</span>
-                    <label class="switch"> <input type="checkbox" class="withdrawal-toggle" data-fee="10" id="toggle-foreign"> <span class="slider"><span class="thumb"></span></span> </label>
-                </div>
-                <!-- Конец исправления -->
             </div>
-        </div> <!-- End Settings View -->
-        </div> <!-- End Container -->
-    </div> <!-- End Wrapper -->
 
-    <!-- ============================================= -->
-    <!-- MODAL CODE STARTS HERE                      -->
-    <!-- ============================================= -->
+            <div id="view-settings" style="display: none;">
+                <div class="settings-item">
+                    <div class="settings-label">
+                        <img src="resources/ticket.png" class="settings-icon" alt="Fee">
+                        <span id="label-base-fee" style="color: #4cd964;">Комиссия 10%</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="toggle-base-fee" checked onchange="updateBaseFeeText()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <p style="color: #aaa; font-size: 0.9rem; margin: 20px 0 10px 5px;">Способ вывода средств:</p>
+                
+                <div class="settings-item withdrawal-opt" id="opt-usdt">
+                    <div class="settings-label">
+                        <img src="resources/usdt-trc20.png" class="settings-icon" alt="USDT">
+                        <span>USDT (TRC20) <br><small style="font-size:0.75em; color:#aaa;">4% + 1 USDT</small></span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" class="w-toggle" data-type="usdt" onchange="handleWithdrawalToggle(this)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
 
-    <!-- Иконка для вызова окна USDT -->
-    <!-- ИЗМЕНЕНИЕ 5: Иконка доллара заменена на эмодзи -->
-    <div class="usdt-icon" onclick="toggleModal()"> <span>💲</span> </div>
-    <!-- Конец ИЗМЕНЕНИЯ 5 -->
+                <div class="settings-item withdrawal-opt" id="opt-card">
+                    <div class="settings-label">
+                        <img src="resources/card-ru.svg" class="settings-icon" alt="Card">
+                        <span>Карта РФ <br><small style="font-size:0.75em; color:#aaa;">6%</small></span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" class="w-toggle" data-type="percent" data-val="6" onchange="handleWithdrawalToggle(this)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
 
-    <!-- Окно с графиком USDT -->
-    <div class="usdt-modal" id="usdt-modal">
-        <div class="modal-header">
-            <div class="close-button" onclick="closeModal()"></div>
-            <div>
-                <label for="usdt-amount">Введите количество USDT:</label>
-                <input type="number" id="usdt-amount" placeholder="Количество USDT" value="1" oninput="updateChartValues()" />
+                <div class="settings-item withdrawal-opt" id="opt-yumoney">
+                    <div class="settings-label">
+                        <img src="resources/UMoney.svg" class="settings-icon" alt="Yoo">
+                        <span>ЮMoney <br><small style="font-size:0.75em; color:#aaa;">6%</small></span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" class="w-toggle" data-type="percent" data-val="6" onchange="handleWithdrawalToggle(this)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="settings-item withdrawal-opt" id="opt-foreign">
+                    <div class="settings-label">
+                        <img src="resources/card.png" class="settings-icon" alt="Foreign">
+                        <span>Иностранная карта <br><small style="font-size:0.75em; color:#aaa;">10%</small></span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" class="w-toggle" data-type="percent" data-val="10" onchange="handleWithdrawalToggle(this)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
             </div>
-            <div>
-                <label for="manual-date">Введите дату (ДД.ММ.ГГГГ):</label>
-                <input type="text" id="manual-date" placeholder="ДД.ММ.ГГГГ" oninput="validateAndUpdateDate()" />
-            </div>
-            <span id="current-rate" class="rate-display">Загрузка...</span>
         </div>
-        <div class="period-buttons">
-            <button onclick="updatePeriod('1')" id="btn-day">День</button>
-            <button onclick="updatePeriod('7')" id="btn-week">Неделя</button>
-            <button onclick="updatePeriod('30')" id="btn-month" class="active">Месяц</button>
-            <button onclick="updatePeriod('365')" id="btn-year">Год</button>
-        </div>
-        <canvas id="usdt-chart"></canvas>
     </div>
 
-    <!-- =========================================== -->
-    <!-- SCRIPTS START HERE                        -->
-    <!-- =========================================== -->
+    <a href="https://www.westyasha.online/" target="_blank" class="bottom-link">
+        <img src="https://i.pinimg.com/1200x/81/31/d0/8131d09777c63e0857e148aae3da0c7e.jpg" alt="WestYasha">
+    </a>
 
-    <!-- Original Main Calculator Script (Handles Tabs, Settings UI, Calculation on Button Click, Wrapper effect) -->
-    <script>
-         const baseFeeToggle=document.getElementById('base-fee-toggle'); const baseFeeLabel=document.getElementById('base-fee-label'); const withdrawalToggles=document.querySelectorAll('.withdrawal-toggle'); const withdrawalOptions=document.querySelectorAll('.withdrawal-option'); const resultDiv=document.getElementById('result'); const inputN=document.getElementById('N'); const inputn=document.getElementById('n'); const inputp=document.getElementById('p'); const inputM=document.getElementById('M'); const calculatorTabButton=document.getElementById('calculator-tab-button'); const settingsTabButton=document.getElementById('settings-tab-button'); const calculatorView=document.getElementById('calculator-view'); const settingsView=document.getElementById('settings-view');
-         function calculate(){
-             const N=parseFloat(inputN.value);
-             const n=parseFloat(inputn.value);
-             const p=parseFloat(inputp.value);
-             const M=parseFloat(inputM.value);
-             const isLowerBaseFee=baseFeeToggle?baseFeeToggle.checked:true;
-             let withdrawalFeePercent=0;
-             withdrawalToggles.forEach(toggle=>{if(toggle.checked)withdrawalFeePercent=parseFloat(toggle.dataset.fee);});
-             if(isNaN(N)||isNaN(n)||isNaN(p)||isNaN(M)){
-                 resultDiv.innerText='Пожалуйста, заполните все поля ввода корректно.';
-                 return;
-             }
-             const baseFeePercent=isLowerBaseFee?10:20;
-             const totalFeePercent=baseFeePercent+withdrawalFeePercent;
-             const totalFeeMultiplier=1-(totalFeePercent/100);
-             const K=N/n;
-             const S=K*p;
-             const B=M*totalFeeMultiplier; // Calculation for B remains
-             const L=B-S;
-             let highlightClass='positive';
-             if(L<0)highlightClass='negative';
-             else if(L<250)highlightClass='low';
-             const profitText=`Чистая прибыль: ${L.toFixed(2)} ₽`;
-             const highlightHTML=profitText.split('').map(char=>`<span>${char}</span>`).join('');
-             // --- MODIFICATION START: Removed the line displaying B ---
-             resultDiv.innerHTML=`
-                 <p>Сумма USDT для оплаты: ${K.toFixed(4)} USDT</p>
-                 <p>Стоимость в рублях (по курсу ${p?p.toFixed(2):'N/A'}): ${S.toFixed(2)} ₽</p>
-                 <p>Базовая комиссия: ${baseFeePercent}%</p>
-                 <p>Комиссия за вывод: ${withdrawalFeePercent}%</p>
-                 <p><b>Общая комиссия: ${totalFeePercent}%</b></p>
-                 <hr style="border-color: rgba(255,255,255,0.2); margin: 10px 0;">
-                 <p class="highlight ${highlightClass}"><span class="emoji">💰</span>${highlightHTML}</p>`;
-             // --- MODIFICATION END ---
-         }
-         /* --- ИЗМЕНЕНИЕ 3 (JS): Текст изменен на "Комиссия" --- */
-         function updateBaseFeeLabelVisuals(isLower){if(baseFeeLabel){baseFeeLabel.textContent=isLower?'Комиссия 10%':'Комиссия 20%';baseFeeLabel.classList.toggle('low',!isLower);baseFeeLabel.classList.toggle('positive',isLower);}}
-         /* --- Конец ИЗМЕНЕНИЯ 3 (JS) --- */
-         function handleWithdrawalToggleChange(event){const currentToggle=event.target;if(currentToggle.checked){withdrawalToggles.forEach(toggle=>{if(toggle!==currentToggle)toggle.checked=false;});updateWithdrawalOptionsVisibility(currentToggle);}else{updateWithdrawalOptionsVisibility(null);}} function updateWithdrawalOptionsVisibility(selectedToggle){withdrawalOptions.forEach(optionDiv=>{const associatedToggle=optionDiv.querySelector('.withdrawal-toggle');const shouldHide=selectedToggle&&associatedToggle!==selectedToggle;optionDiv.classList.toggle('hidden-option',shouldHide);const isSelected=selectedToggle&&associatedToggle===selectedToggle;optionDiv.classList.toggle('selected',isSelected);});} function showCalculatorView(){calculatorView.style.display='block';settingsView.style.display='none';calculatorTabButton.classList.add('active');settingsTabButton.classList.remove('active');} function showSettingsView(){calculatorView.style.display='none';settingsView.style.display='block';calculatorTabButton.classList.remove('active');settingsTabButton.classList.add('active');} if(calculatorTabButton)calculatorTabButton.addEventListener('click',showCalculatorView);if(settingsTabButton)settingsTabButton.addEventListener('click',showSettingsView);if(baseFeeToggle){baseFeeToggle.addEventListener('change',()=>{updateBaseFeeLabelVisuals(baseFeeToggle.checked);});} withdrawalToggles.forEach(toggle=>{toggle.addEventListener('change',handleWithdrawalToggleChange);}); window.addEventListener('load',()=>{if(baseFeeToggle)updateBaseFeeLabelVisuals(baseFeeToggle.checked);updateWithdrawalOptionsVisibility(null);showCalculatorView();}); const wrapper=document.querySelector('.wrapper');const container=document.querySelector('.container');if(wrapper&&container){wrapper.addEventListener('mousemove',(e)=>{const rect=container.getBoundingClientRect();const cX=rect.left+rect.width/2;const cY=rect.top+rect.height/2;const mX=e.clientX-cX;const mY=e.clientY-cY;const rX=mY/20;const rY=mX/20;container.style.transform=`rotateX(${-rX}deg) rotateY(${rY}deg)`;});wrapper.addEventListener('mouseleave',()=>{container.style.transform='rotateX(0) rotateY(0)';});}
-    </script>
+    <div class="usdt-trigger" onclick="openModal()">💸</div>
 
-    <!-- Chart.js Library -->
+    <div class="modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
+    <div class="usdt-modal" id="usdt-modal">
+        <div class="modal-header">
+            <h3>Курс USDT</h3>
+            <div class="close-modal" onclick="closeModal()">✕</div>
+        </div>
+        <div class="form-group">
+            <input type="number" id="usdt-calc-amount" value="1" placeholder="Количество USDT" oninput="updateChart()">
+        </div>
+        <div class="rate-display" id="modal-rate-display">Загрузка...</div>
+        <div class="chart-controls">
+            <button class="chart-btn" onclick="setPeriod('1')">24Ч</button>
+            <button class="chart-btn" onclick="setPeriod('7')">7Д</button>
+            <button class="chart-btn active" onclick="setPeriod('30')">30Д</button>
+        </div>
+        <canvas id="usdtChart"></canvas>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- USDT Modal Script -->
     <script>
-        const modal=document.getElementById('usdt-modal');const currentRate=document.getElementById('current-rate');const usdtAmountInput=document.getElementById('usdt-amount');const dateInput=document.getElementById('manual-date');let chart;let prices=[];let labels=[];let activePeriodButton=document.getElementById('btn-month');function toggleModal(){modal.classList.toggle('active');if(modal.classList.contains('active')){loadUsdtData(30);}}function closeModal(){modal.classList.remove('active');}async function loadUsdtData(days){const rubApiUrl=days==='max'?`https://api.coingecko.com/api/v3/coins/tether/market_chart?vs_currency=rub&days=max`:`https://api.coingecko.com/api/v3/coins/tether/market_chart?vs_currency=rub&days=${days}`;try{const response=await fetch(rubApiUrl);const data=await response.json();labels=data.prices.map(price=>{const date=new Date(price[0]);return`${date.getDate()}.${date.getMonth()+1}`});prices=data.prices.map(price=>price[1]);updateCurrentRate();renderChart();}catch(error){currentRate.innerHTML='<span style="color: red;">Ошибка загрузки данных.</span>';}}function renderChart(){const ctx=document.getElementById('usdt-chart').getContext('2d');if(chart)chart.destroy();chart=new Chart(ctx,{type:'line',data:{labels:labels,datasets:[{label:'',data:prices.map(price=>price*(parseFloat(usdtAmountInput.value)||1)),borderColor:'#4caf50',backgroundColor:'rgba(76, 175, 80, 0.2)',fill:true,tension:0.1,borderWidth:2,pointRadius:0,pointHoverRadius:6,pointBackgroundColor:'#4caf50',}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{title:(tooltipItems)=>labels[tooltipItems[0].dataIndex],label:(tooltipItem)=>`${(parseFloat(usdtAmountInput.value)||1)} USDT = ${(tooltipItem.raw).toFixed(2)} ₽`},displayColors:false,backgroundColor:'#333',titleColor:'#fff',bodyColor:'#fff',borderColor:'#4caf50',borderWidth:1,}},scales:{x:{grid:{display:false},ticks:{color:'#ccc'}},y:{grid:{color:'#555'},ticks:{color:'#ccc'}}}}});}function updateCurrentRate(){if(prices.length>0){const lastPrice=prices[prices.length-1];const amount=parseFloat(usdtAmountInput.value)||1;const calculatedRate=(lastPrice*amount).toFixed(2);currentRate.innerHTML=`<img src="resources/tether-usdt-logo.png" alt="Tether" style="width: 20px; vertical-align: middle; margin-right: 5px;" /> ${amount} USDT = ${calculatedRate} ₽`;currentRate.classList.add('pulse');}else{currentRate.innerHTML='<span style="color: red;">Нет доступных данных.</span>';currentRate.classList.remove('pulse');}}function updateChartValues(){updateCurrentRate();if(chart){const amount=parseFloat(usdtAmountInput.value)||1;chart.data.datasets[0].data=prices.map(price=>price*amount);chart.update();}}async function validateAndUpdateDate(){const date=dateInput.value;const regex=/^\d{2}\.\d{2}\.\d{4}$/;if(!regex.test(date)){currentRate.innerHTML='<span style="color: red;">Введите дату в формате ДД.ММ.ГГГГ</span>';return;}const[day,month,year]=date.split('.');const formattedDate=`${day}-${month}-${year}`;const rubApiUrl=`https://api.coingecko.com/api/v3/coins/tether/history?date=${formattedDate}`;try{const response=await fetch(rubApiUrl);const data=await response.json();const rate=data.market_data?.current_price?.rub;if(rate){prices=[rate];updateCurrentRate();if(chart)chart.destroy();}else{currentRate.innerHTML='<span style="color: red;">Нет данных для выбранной даты.</span>';}}catch(error){currentRate.innerHTML='<span style="color: red;">Ошибка загрузки данных.</span>';}}function updatePeriod(period){loadUsdtData(period);if(activePeriodButton)activePeriodButton.classList.remove('active');const buttonId=`btn-${period==='1'?'day':period==='7'?'week':period==='30'?'month':'year'}`;activePeriodButton=document.getElementById(buttonId);if(activePeriodButton)activePeriodButton.classList.add('active');}
-    </script>
+        // Tab System
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            
+            if(tab === 'calc') {
+                document.getElementById('view-calc').style.display = 'block';
+                document.getElementById('view-settings').style.display = 'none';
+            } else {
+                document.getElementById('view-calc').style.display = 'none';
+                document.getElementById('view-settings').style.display = 'block';
+            }
+        }
 
-    <!-- Leans Fun Icon and Modal Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded',function(){let iconContainer=document.querySelector('.bottom-right-icon-container');if(!iconContainer){iconContainer=document.createElement('div');iconContainer.className='bottom-right-icon-container';Object.assign(iconContainer.style,{position:'fixed',bottom:'19px',right:'80px',display:'flex',flexDirection:'row-reverse',gap:'10px',zIndex:'999'});document.body.appendChild(iconContainer);}const iconSize=47;const newIcon=document.createElement('img');newIcon.src='https://s3.leans.fun/avatars/7fa0a365-e3f9-4926-bd05-fbb352a5fe65.gif?w=128';newIcon.alt='New Icon';Object.assign(newIcon.style,{width:`${iconSize}px`,height:`${iconSize}px`,cursor:'pointer',borderRadius:'50%',boxShadow:'0 2px 4px rgba(0, 0, 0, 0.2)',border:'2px solid #d3d3d3',transition:'transform 0.3s ease'});newIcon.addEventListener('mouseenter',()=>{newIcon.style.transform='scale(1.1)';});newIcon.addEventListener('mouseleave',()=>{newIcon.style.transform='scale(1)';});const backdrop=document.createElement('div');Object.assign(backdrop.style,{position:'fixed',top:'0',left:'0',width:'100%',height:'100%',backgroundColor:'rgba(0, 0, 0, 0.5)',backdropFilter:'blur(10px)',zIndex:'1000',display:'none'});const modalLeans=document.createElement('div');Object.assign(modalLeans.style,{position:'fixed',top:'50%',left:'50%',transform:'translate(-50%, -50%)',width:'80%',height:'80%',backgroundColor:'#f8f8f8',borderRadius:'12px',boxShadow:'0 4px 12px rgba(0, 0, 0, 0.2)',overflow:'hidden',zIndex:'1001',display:'none',border:'1px solid #ccc'});const modalHeader=document.createElement('div');Object.assign(modalHeader.style,{height:'30px',backgroundColor:'#ebebeb',borderBottom:'1px solid #dcdcdc',display:'flex',alignItems:'center',padding:'0 10px'});const closeButton=document.createElement('div');Object.assign(closeButton.style,{width:'12px',height:'12px',borderRadius:'50%',backgroundColor:'#ff5f57',marginLeft:'auto',cursor:'pointer'});closeButton.addEventListener('click',function(){modalLeans.style.display='none';backdrop.style.display='none';});modalHeader.appendChild(closeButton);const iframe=document.createElement('iframe');iframe.src='https://leans.fun/westyasha';Object.assign(iframe.style,{width:'100%',height:'calc(100% - 30px)',border:'none'});modalLeans.appendChild(modalHeader);modalLeans.appendChild(iframe);document.body.appendChild(backdrop);document.body.appendChild(modalLeans);newIcon.addEventListener('click',function(){modalLeans.style.display='block';backdrop.style.display='block';});iconContainer.appendChild(newIcon);});
-    </script>
+        // Settings Logic
+        function updateBaseFeeText() {
+            const isChecked = document.getElementById('toggle-base-fee').checked;
+            const label = document.getElementById('label-base-fee');
+            if(isChecked) {
+                label.textContent = "Комиссия 10%";
+                label.style.color = "#4cd964";
+            } else {
+                label.textContent = "Комиссия 20%";
+                label.style.color = "#ffcc00";
+            }
+        }
 
+        function handleWithdrawalToggle(clicked) {
+            if(clicked.checked) {
+                document.querySelectorAll('.w-toggle').forEach(t => {
+                    if(t !== clicked) t.checked = false;
+                });
+                document.querySelectorAll('.withdrawal-opt').forEach(opt => opt.classList.remove('active'));
+                clicked.closest('.withdrawal-opt').classList.add('active');
+            } else {
+                clicked.closest('.withdrawal-opt').classList.remove('active');
+            }
+        }
+
+        // Calculation Logic
+        function toggleDetails() {
+            document.getElementById('details-container').classList.toggle('open');
+        }
+
+        function calculate() {
+            const N = parseFloat(document.getElementById('N').value);
+            const n = parseFloat(document.getElementById('n').value);
+            const p = parseFloat(document.getElementById('p').value);
+            const M = parseFloat(document.getElementById('M').value);
+
+            if([N, n, p, M].some(isNaN)) {
+                alert("Пожалуйста, заполните все поля корректно");
+                return;
+            }
+
+            // 1. Cost in USDT
+            const costUSDT = N / n;
+            // 2. Cost in Rubles (Actual spend)
+            const costRUB = costUSDT * p;
+
+            // 3. Base Fee Calculation
+            const baseFeePercent = document.getElementById('toggle-base-fee').checked ? 10 : 20;
+            const revenueAfterBase = M * (1 - (baseFeePercent / 100));
+
+            // 4. Withdrawal Fee Calculation
+            let withdrawalCost = 0;
+            let withdrawalDesc = "0%";
+            
+            const activeToggle = document.querySelector('.w-toggle:checked');
+            if(activeToggle) {
+                const type = activeToggle.dataset.type;
+                if(type === 'usdt') {
+                    // 4% + 1 USDT (converted to RUB using p)
+                    withdrawalCost = (revenueAfterBase * 0.04) + (1 * p);
+                    withdrawalDesc = "4% + 1 USDT";
+                } else {
+                    const percent = parseFloat(activeToggle.dataset.val);
+                    withdrawalCost = revenueAfterBase * (percent / 100);
+                    withdrawalDesc = `${percent}%`;
+                }
+            }
+
+            // 5. Final Net Revenue
+            const finalRevenue = revenueAfterBase - withdrawalCost;
+            
+            // 6. Profit
+            const profit = finalRevenue - costRUB;
+
+            // Render Results
+            document.getElementById('result-area').style.display = 'block';
+            
+            // Details HTML
+            const detailsHTML = `
+                <div class="detail-row"><span>Себестоимость (USDT):</span> <span>${costUSDT.toFixed(4)} USDT</span></div>
+                <div class="detail-row"><span>Себестоимость (RUB):</span> <span>${costRUB.toFixed(2)} ₽</span></div>
+                <div class="detail-row"><span>Базовая комиссия:</span> <span>${baseFeePercent}%</span></div>
+                <div class="detail-row"><span>Доход после базовой:</span> <span>${revenueAfterBase.toFixed(2)} ₽</span></div>
+                <div class="detail-row"><span>Комиссия вывода (${withdrawalDesc}):</span> <span>-${withdrawalCost.toFixed(2)} ₽</span></div>
+                <div class="detail-row"><span>Итого на руки:</span> <span>${finalRevenue.toFixed(2)} ₽</span></div>
+            `;
+            document.getElementById('details-content').innerHTML = detailsHTML;
+
+            // Profit Display
+            const resultBox = document.getElementById('profit-result');
+            let colorClass = profit >= 0 ? (profit > 250 ? 'positive' : 'low') : 'negative';
+            let emoji = profit >= 0 ? '🤑' : '📉';
+            
+            resultBox.innerHTML = `
+                <div style="font-size:0.9rem; color:#aaa;">Чистая прибыль</div>
+                <div class="profit-value ${colorClass}">
+                    ${emoji} ${profit.toFixed(2)} ₽
+                </div>
+            `;
+        }
+
+        // Chart & Modal System
+        let chartInstance = null;
+        let chartData = [];
+        let chartLabels = [];
+
+        function openModal() {
+            document.getElementById('usdt-modal').classList.add('active');
+            document.getElementById('modal-overlay').classList.add('active');
+            loadChartData(30);
+        }
+
+        function closeModal() {
+            document.getElementById('usdt-modal').classList.remove('active');
+            document.getElementById('modal-overlay').classList.remove('active');
+        }
+
+        async function loadChartData(days) {
+            const display = document.getElementById('modal-rate-display');
+            display.textContent = "Обновление...";
+            
+            try {
+                const url = `https://api.coingecko.com/api/v3/coins/tether/market_chart?vs_currency=rub&days=${days}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                chartLabels = data.prices.map(item => {
+                    const d = new Date(item[0]);
+                    return `${d.getDate()}.${d.getMonth()+1}`;
+                });
+                chartData = data.prices.map(item => item[1]);
+                
+                updateChart();
+            } catch (e) {
+                display.textContent = "Ошибка API";
+            }
+        }
+
+        function updateChart() {
+            const amount = parseFloat(document.getElementById('usdt-calc-amount').value) || 1;
+            const currentPrice = chartData[chartData.length - 1];
+            
+            if(currentPrice) {
+                const total = (currentPrice * amount).toFixed(2);
+                document.getElementById('modal-rate-display').textContent = `${amount} USDT = ${total} ₽`;
+            }
+
+            const ctx = document.getElementById('usdtChart').getContext('2d');
+            
+            // Gradient
+            let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(76, 175, 80, 0.5)');
+            gradient.addColorStop(1, 'rgba(76, 175, 80, 0.0)');
+
+            const dataset = chartData.map(val => val * amount);
+
+            if(chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'Цена',
+                        data: dataset,
+                        borderColor: '#4caf50',
+                        backgroundColor: gradient,
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { display: false },
+                        y: { 
+                            display: true, 
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { color: '#888' }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    }
+                }
+            });
+        }
+
+        function setPeriod(days) {
+            document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            loadChartData(days);
+        }
+    </script>
 </body>
 </html>
