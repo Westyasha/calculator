@@ -9,17 +9,15 @@
     <meta property="og:image" content="https://i.pinimg.com/736x/f1/0a/f3/f10af3410d40556df99aaf9a2985e324.jpg" />
     <meta property="og:url" content="https://westyasha.github.io/calculator/" />
     <meta property="og:type" content="website" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Avatar Image" />
     <title>Калькулятор прибыли</title>
     <link rel="icon" href="resources/favicon.ico" type="image/x-icon">
     <style>
         body { margin: 0; padding: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; overflow-x: hidden; background: url('resources/background.jpg') no-repeat center center fixed; background-size: cover; color: #eee; }
-        #background-video { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
+        #background-video { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; transition: filter 0.5s ease; }
         
-        .wrapper { width: 100%; display: flex; justify-content: center; padding: 20px; box-sizing: border-box; }
-        
+        .wrapper { width: 100%; display: flex; justify-content: center; padding: 20px; box-sizing: border-box; transition: filter 0.5s ease; }
+        .wrapper.blurred, #background-video.blurred { filter: blur(10px); }
+
         .container { 
             width: 400px; 
             padding: 30px; 
@@ -31,6 +29,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1); 
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             position: relative;
+            z-index: 10;
         }
 
         .container:hover {
@@ -144,44 +143,81 @@
         input:checked + .slider { background-color: #68C2DE; }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        .bottom-link { position: fixed; bottom: 20px; right: 80px; z-index: 100; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .bottom-link { 
+            position: fixed; bottom: 20px; right: 80px; z-index: 100; 
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            cursor: pointer;
+            background: none; border: none; padding: 0;
+        }
         .bottom-link img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
         .bottom-link:hover { transform: scale(1.15) rotate(5deg); }
 
-        .usdt-trigger { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: rgba(40, 40, 40, 0.8); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: all 0.3s; z-index: 99; font-size: 1.5rem; }
+        .usdt-trigger { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: rgba(40, 40, 40, 0.8); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: all 0.3s; z-index: 99; font-size: 1.5rem; user-select: none; }
         .usdt-trigger:hover { transform: scale(1.1); background: rgba(60, 60, 60, 0.9); }
 
-        .usdt-modal {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
-            width: 90%; max-width: 550px;
-            background: rgba(30, 30, 40, 0.65);
+        .widget-window {
+            position: fixed;
+            background: rgba(40, 40, 50, 0.4);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05);
             opacity: 0; pointer-events: none;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.3s ease, transform 0.3s ease;
             z-index: 1000;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column;
+            overflow: hidden;
         }
-        .usdt-modal.active { opacity: 1; pointer-events: all; transform: translate(-50%, -50%) scale(1); }
-        
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); opacity: 0; pointer-events: none; transition: opacity 0.4s; z-index: 999; }
-        .modal-overlay.active { opacity: 1; pointer-events: all; }
 
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .close-modal { background: #ff5f56; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; transition: transform 0.2s; }
-        .close-modal:hover { transform: scale(1.1); }
+        .widget-window.active { opacity: 1; pointer-events: all; }
+
+        .widget-header {
+            padding: 12px 15px;
+            background: rgba(255,255,255,0.03);
+            cursor: grab;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            user-select: none;
+        }
+        .widget-header:active { cursor: grabbing; }
+        .widget-title { font-size: 0.9rem; font-weight: 600; color: #ddd; }
+        .widget-controls { display: flex; gap: 8px; }
+        .control-dot { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; transition: transform 0.2s; position: relative; }
+        .dot-close { background: #ff5f56; }
+        .dot-min { background: #ffbd2e; }
+        .dot-max { background: #27c93f; }
+        .control-dot:hover { transform: scale(1.1); }
+        .control-dot:hover::after { content: '✕'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 8px; color: rgba(0,0,0,0.5); font-weight: bold; }
+        .dot-min:hover::after { content: '−'; }
+        .dot-max:hover::after { content: '+'; }
+
+        #usdt-widget { width: 340px; top: 20%; right: 20%; transform: scale(0.95); }
+        #usdt-widget.active { transform: scale(1); }
+        .widget-content { padding: 20px; }
+
+        #browser-widget { 
+            width: 85vw; height: 85vh; 
+            top: 50%; left: 50%; 
+            transform: translate(-50%, -50%) scale(0.95); 
+            background: rgba(20, 20, 25, 0.85);
+            display: none;
+        }
+        #browser-widget.active { 
+            display: flex;
+            transform: translate(-50%, -50%) scale(1); 
+        }
+        
+        iframe { flex: 1; border: none; background: #fff; width: 100%; height: 100%; }
 
         .chart-controls { display: flex; gap: 10px; margin-bottom: 20px; }
-        .chart-btn { flex: 1; padding: 8px; background: rgba(255,255,255,0.05); border: none; color: #ccc; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .chart-btn { flex: 1; padding: 6px; background: rgba(255,255,255,0.05); border: none; color: #ccc; border-radius: 8px; cursor: pointer; transition: 0.3s; font-size: 0.8rem; }
         .chart-btn.active { background: #4caf50; color: white; }
         
-        .rate-display { font-size: 1.2rem; font-weight: bold; color: #4caf50; margin-bottom: 15px; text-align: center; text-shadow: 0 0 15px rgba(76,175,80,0.5); }
+        .rate-display { font-size: 1.1rem; font-weight: bold; color: #4caf50; margin-bottom: 15px; text-align: center; text-shadow: 0 0 15px rgba(76,175,80,0.5); }
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 768px) { #background-video { display: none; } body { background: linear-gradient(135deg, #1a1a2e, #16213e); } .container { width: 90%; padding: 20px; } }
+        @media (max-width: 768px) { #background-video { display: none; } body { background: linear-gradient(135deg, #1a1a2e, #16213e); } .container { width: 90%; padding: 20px; } #browser-widget { width: 95vw; height: 90vh; } #usdt-widget { width: 90vw; top: 10% !important; left: 5% !important; } }
     </style>
 </head>
 <body>
@@ -238,7 +274,7 @@
                         <span id="label-base-fee" style="color: #4cd964;">Комиссия 10%</span>
                     </div>
                     <label class="switch">
-                        <input type="checkbox" id="toggle-base-fee" checked onchange="updateBaseFeeText()">
+                        <input type="checkbox" id="toggle-base-fee" checked onchange="updateBaseFeeText(); saveState()">
                         <span class="slider"></span>
                     </label>
                 </div>
@@ -292,33 +328,53 @@
         </div>
     </div>
 
-    <a href="https://www.westyasha.online/" target="_blank" class="bottom-link">
+    <button class="bottom-link" onclick="toggleBrowser()">
         <img src="https://i.pinimg.com/1200x/81/31/d0/8131d09777c63e0857e148aae3da0c7e.jpg" alt="WestYasha">
-    </a>
+    </button>
 
-    <div class="usdt-trigger" onclick="openModal()">💸</div>
+    <div class="usdt-trigger" onclick="toggleUsdtWidget()">💸</div>
 
-    <div class="modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
-    <div class="usdt-modal" id="usdt-modal">
-        <div class="modal-header">
-            <h3>Курс USDT</h3>
-            <div class="close-modal" onclick="closeModal()">✕</div>
+    <div id="usdt-widget" class="widget-window">
+        <div class="widget-header" id="usdt-header">
+            <div class="widget-controls">
+                <div class="control-dot dot-close" onclick="toggleUsdtWidget()"></div>
+                <div class="control-dot dot-min"></div>
+                <div class="control-dot dot-max"></div>
+            </div>
+            <div class="widget-title">Курс USDT</div>
+            <div style="width: 40px;"></div>
         </div>
-        <div class="form-group">
-            <input type="number" id="usdt-calc-amount" value="1" placeholder="Количество USDT" oninput="updateChart()">
+        <div class="widget-content">
+            <div class="form-group">
+                <input type="number" id="usdt-calc-amount" value="1" placeholder="Количество USDT" oninput="updateChart()">
+            </div>
+            <div class="rate-display" id="modal-rate-display">Загрузка...</div>
+            <div class="chart-controls">
+                <button class="chart-btn" onclick="setPeriod('1')">24Ч</button>
+                <button class="chart-btn" onclick="setPeriod('7')">7Д</button>
+                <button class="chart-btn active" onclick="setPeriod('30')">30Д</button>
+            </div>
+            <canvas id="usdtChart"></canvas>
         </div>
-        <div class="rate-display" id="modal-rate-display">Загрузка...</div>
-        <div class="chart-controls">
-            <button class="chart-btn" onclick="setPeriod('1')">24Ч</button>
-            <button class="chart-btn" onclick="setPeriod('7')">7Д</button>
-            <button class="chart-btn active" onclick="setPeriod('30')">30Д</button>
+    </div>
+
+    <div id="browser-widget" class="widget-window">
+        <div class="widget-header">
+            <div class="widget-controls">
+                <div class="control-dot dot-close" onclick="toggleBrowser()"></div>
+                <div class="control-dot dot-min"></div>
+                <div class="control-dot dot-max"></div>
+            </div>
+            <div class="widget-title">WestYasha Online</div>
+            <div style="width: 40px;"></div>
         </div>
-        <canvas id="usdtChart"></canvas>
+        <iframe src="https://www.westyasha.online/" title="WestYasha Online"></iframe>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Tab System
+        document.addEventListener('DOMContentLoaded', loadState);
+
         function switchTab(tab) {
             document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
             document.getElementById('tab-' + tab).classList.add('active');
@@ -332,7 +388,6 @@
             }
         }
 
-        // Settings Logic
         function updateBaseFeeText() {
             const isChecked = document.getElementById('toggle-base-fee').checked;
             const label = document.getElementById('label-base-fee');
@@ -355,9 +410,9 @@
             } else {
                 clicked.closest('.withdrawal-opt').classList.remove('active');
             }
+            saveState();
         }
 
-        // Calculation Logic
         function toggleDetails() {
             document.getElementById('details-container').classList.toggle('open');
         }
@@ -373,16 +428,11 @@
                 return;
             }
 
-            // 1. Cost in USDT
             const costUSDT = N / n;
-            // 2. Cost in Rubles (Actual spend)
             const costRUB = costUSDT * p;
-
-            // 3. Base Fee Calculation
             const baseFeePercent = document.getElementById('toggle-base-fee').checked ? 10 : 20;
             const revenueAfterBase = M * (1 - (baseFeePercent / 100));
 
-            // 4. Withdrawal Fee Calculation
             let withdrawalCost = 0;
             let withdrawalDesc = "0%";
             
@@ -390,7 +440,6 @@
             if(activeToggle) {
                 const type = activeToggle.dataset.type;
                 if(type === 'usdt') {
-                    // 4% + 1 USDT (converted to RUB using p)
                     withdrawalCost = (revenueAfterBase * 0.04) + (1 * p);
                     withdrawalDesc = "4% + 1 USDT";
                 } else {
@@ -400,16 +449,11 @@
                 }
             }
 
-            // 5. Final Net Revenue
             const finalRevenue = revenueAfterBase - withdrawalCost;
-            
-            // 6. Profit
             const profit = finalRevenue - costRUB;
 
-            // Render Results
             document.getElementById('result-area').style.display = 'block';
             
-            // Details HTML
             const detailsHTML = `
                 <div class="detail-row"><span>Себестоимость (USDT):</span> <span>${costUSDT.toFixed(4)} USDT</span></div>
                 <div class="detail-row"><span>Себестоимость (RUB):</span> <span>${costRUB.toFixed(2)} ₽</span></div>
@@ -420,7 +464,6 @@
             `;
             document.getElementById('details-content').innerHTML = detailsHTML;
 
-            // Profit Display
             const resultBox = document.getElementById('profit-result');
             let colorClass = profit >= 0 ? (profit > 250 ? 'positive' : 'low') : 'negative';
             let emoji = profit >= 0 ? '🤑' : '📉';
@@ -433,20 +476,34 @@
             `;
         }
 
-        // Chart & Modal System
         let chartInstance = null;
         let chartData = [];
         let chartLabels = [];
 
-        function openModal() {
-            document.getElementById('usdt-modal').classList.add('active');
-            document.getElementById('modal-overlay').classList.add('active');
-            loadChartData(30);
+        function toggleUsdtWidget() {
+            const widget = document.getElementById('usdt-widget');
+            widget.classList.toggle('active');
+            if(widget.classList.contains('active')) {
+                loadChartData(30);
+            }
+            saveState();
         }
 
-        function closeModal() {
-            document.getElementById('usdt-modal').classList.remove('active');
-            document.getElementById('modal-overlay').classList.remove('active');
+        function toggleBrowser() {
+            const widget = document.getElementById('browser-widget');
+            const wrapper = document.querySelector('.wrapper');
+            const bgVideo = document.getElementById('background-video');
+            
+            widget.classList.toggle('active');
+            
+            if(widget.classList.contains('active')) {
+                wrapper.classList.add('blurred');
+                if(bgVideo) bgVideo.classList.add('blurred');
+            } else {
+                wrapper.classList.remove('blurred');
+                if(bgVideo) bgVideo.classList.remove('blurred');
+            }
+            saveState();
         }
 
         async function loadChartData(days) {
@@ -481,7 +538,6 @@
 
             const ctx = document.getElementById('usdtChart').getContext('2d');
             
-            // Gradient
             let gradient = ctx.createLinearGradient(0, 0, 0, 400);
             gradient.addColorStop(0, 'rgba(76, 175, 80, 0.5)');
             gradient.addColorStop(1, 'rgba(76, 175, 80, 0.0)');
@@ -529,6 +585,103 @@
             document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
             loadChartData(days);
+        }
+
+        function makeDraggable(element, handle) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            
+            handle.onmousedown = dragMouseDown;
+
+            function dragMouseDown(e) {
+                e = e || window.event;
+                e.preventDefault();
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e = e || window.event;
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
+                element.style.transform = "scale(1)";
+                element.style.right = "auto"; 
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+                saveState();
+            }
+        }
+
+        makeDraggable(document.getElementById("usdt-widget"), document.getElementById("usdt-header"));
+
+        function saveState() {
+            const usdtWidget = document.getElementById("usdt-widget");
+            const browserWidget = document.getElementById("browser-widget");
+            const activeWithdrawal = document.querySelector('.w-toggle:checked');
+            
+            const state = {
+                baseFee: document.getElementById('toggle-base-fee').checked,
+                withdrawalType: activeWithdrawal ? activeWithdrawal.dataset.type : null,
+                withdrawalVal: activeWithdrawal ? activeWithdrawal.dataset.val : null,
+                usdtWindow: {
+                    open: usdtWidget.classList.contains('active'),
+                    top: usdtWidget.style.top,
+                    left: usdtWidget.style.left
+                },
+                browserWindow: {
+                    open: browserWidget.classList.contains('active')
+                }
+            };
+            localStorage.setItem('westyasha_calc_state', JSON.stringify(state));
+        }
+
+        function loadState() {
+            const stored = localStorage.getItem('westyasha_calc_state');
+            if(!stored) return;
+
+            const state = JSON.parse(stored);
+
+            document.getElementById('toggle-base-fee').checked = state.baseFee;
+            updateBaseFeeText();
+
+            if(state.withdrawalType) {
+                const selector = state.withdrawalType === 'usdt' 
+                    ? '.w-toggle[data-type="usdt"]' 
+                    : `.w-toggle[data-type="percent"][data-val="${state.withdrawalVal}"]`;
+                
+                const el = document.querySelector(selector);
+                if(el) {
+                    el.checked = true;
+                    handleWithdrawalToggle(el);
+                }
+            }
+
+            const usdtWidget = document.getElementById("usdt-widget");
+            if(state.usdtWindow) {
+                if(state.usdtWindow.top) {
+                    usdtWidget.style.top = state.usdtWindow.top;
+                    usdtWidget.style.left = state.usdtWindow.left;
+                    usdtWidget.style.right = "auto";
+                }
+                if(state.usdtWindow.open) {
+                    usdtWidget.classList.add('active');
+                    loadChartData(30);
+                }
+            }
+
+            if(state.browserWindow && state.browserWindow.open) {
+                toggleBrowser();
+            }
         }
     </script>
 </body>
